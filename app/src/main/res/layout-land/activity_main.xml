@@ -4,29 +4,29 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:orientation="vertical"
+android:orientation="horizontal"
 tools:context=".MainActivity">
 
 
 <com.gmail.pavkascool.seabattle.CellView
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
     app:cols="10"
-    app:rows="8"
+    app:rows="10"
+    android:layout_weight="1"
     android:id="@+id/white"
-    android:layout_weight="1"
     android:layout_gravity="center_horizontal"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"/>
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"/>
 <com.gmail.pavkascool.seabattle.CellView
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
     app:cols="10"
-    app:rows="8"
-    android:id="@+id/black"
+    app:rows="10"
     android:layout_weight="1"
+    android:id="@+id/black"
     android:layout_gravity="center_horizontal"
-    android:paddingBottom="4dp"
-    android:paddingTop="4dp"/>
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"/>
 
 </LinearLayout>
