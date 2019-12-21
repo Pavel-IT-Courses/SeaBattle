@@ -28,6 +28,8 @@ public class CellView extends View implements View.OnTouchListener {
 
     private Paint paint;
 
+    private int step;
+
     public int getRows() {
         return rows;
     }
@@ -54,33 +56,25 @@ public class CellView extends View implements View.OnTouchListener {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int minDim = Math.min(widthMeasureSpec, heightMeasureSpec);
-        super.onMeasure(minDim, minDim);
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
-        size = Math.min(getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom());
-        int left = getPaddingLeft();
-        int top = getPaddingTop();
-        stepV = size / rows;
-        stepH = size / cols;
-        canvas.drawRect(left, top, left + size, top + size, paint);
+
+        step = Math.min((getWidth() / cols), getHeight() / rows);
+        canvas.drawRect(0, 0, step * cols, step * rows, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1);
+        canvas.drawRect(0, 0, step * cols, step * rows, paint);
         for(int i = 1; i < rows; i++) {
-            canvas.drawLine(left, top + stepV * i, left + size, top + stepV * i, paint);
+            canvas.drawLine(0, step * i, step * cols, step * i,  paint);
         }
         for(int i = 1; i < cols; i++) {
-            canvas.drawLine(left + stepH * i, top, left + stepH * i, top + size, paint);
+            canvas.drawLine(step * i, 0, step * i, step * rows, paint);
         }
-        canvas.drawRect(left, top, left + size, top + size, paint);
+
     }
 
     @Override
@@ -89,8 +83,8 @@ public class CellView extends View implements View.OnTouchListener {
             float x = event.getX();
             float y = event.getY();
 
-            int r = (int)(y / stepV);
-            int c = (int)(x / stepH);
+            int r = (int)(y / step);
+            int c = (int)(x / step);
 
             System.out.println("Row = " + r + " Column = " + c );
             System.out.println("ID = " + getId());

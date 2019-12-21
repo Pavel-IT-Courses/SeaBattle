@@ -9,20 +9,20 @@ tools:context=".MainActivity">
 
 
 <com.gmail.pavkascool.seabattle.CellView
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="0dp"
     app:cols="10"
-    app:rows="8"
+    app:rows="1"
     android:id="@+id/white"
     android:layout_weight="1"
     android:layout_gravity="center_horizontal"
     android:paddingTop="4dp"
     android:paddingBottom="4dp"/>
 <com.gmail.pavkascool.seabattle.CellView
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="0dp"
     app:cols="10"
-    app:rows="8"
+    app:rows="1"
     android:id="@+id/black"
     android:layout_weight="1"
     android:layout_gravity="center_horizontal"

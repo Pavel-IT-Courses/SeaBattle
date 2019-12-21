@@ -15,7 +15,7 @@ tools:context=".MainActivity">
     app:rows="10"
     android:layout_weight="1"
     android:id="@+id/white"
-    android:layout_gravity="center_horizontal"
+    android:layout_gravity="center_vertical"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"/>
 <com.gmail.pavkascool.seabattle.CellView
@@ -25,7 +25,7 @@ tools:context=".MainActivity">
     app:rows="10"
     android:layout_weight="1"
     android:id="@+id/black"
-    android:layout_gravity="center_horizontal"
+    android:layout_gravity="center_vertical"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"/>
 
