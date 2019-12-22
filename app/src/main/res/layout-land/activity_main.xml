@@ -8,21 +8,29 @@ android:orientation="horizontal"
 tools:context=".MainActivity">
 
 
-<com.gmail.pavkascool.seabattle.CellView
+<com.gmail.pavkascool.seabattle.CellViewLayout
     android:layout_width="0dp"
     android:layout_height="match_parent"
-    app:cols="10"
-    app:rows="10"
+    app:cvl_cols="10"
+    app:cvl_rows="10"
     android:layout_weight="1"
     android:id="@+id/white"
     android:layout_gravity="center_vertical"
     android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"/>
-<com.gmail.pavkascool.seabattle.CellView
+    android:layout_marginRight="4dp">
+    <com.gmail.pavkascool.seabattle.CellView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ship"
+        app:cols="3"
+        app:rows="1"/>
+</com.gmail.pavkascool.seabattle.CellViewLayout>
+
+<com.gmail.pavkascool.seabattle.CellViewLayout
     android:layout_width="0dp"
     android:layout_height="match_parent"
-    app:cols="10"
-    app:rows="10"
+    app:cvl_cols="10"
+    app:cvl_rows="10"
     android:layout_weight="1"
     android:id="@+id/black"
     android:layout_gravity="center_vertical"

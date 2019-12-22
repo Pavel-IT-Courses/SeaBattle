@@ -1,11 +1,13 @@
 package com.gmail.pavkascool.seabattle;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -15,20 +17,47 @@ public class CellView extends View implements View.OnTouchListener {
     public CellView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener(this);
-        TypedArray ar = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CellView, 0, 0);
+        TypedArray ar = context.obtainStyledAttributes(attrs, R.styleable.CellView, 0, 0);
         cols = ar.getInt(R.styleable.CellView_cols, 1);
         rows = ar.getInt(R.styleable.CellView_rows, 1);
+        locationCol = ar.getInt(R.styleable.CellView_location_col, 0);
+        locationRow = ar.getInt(R.styleable.CellView_location_row, 0);
         paint = new Paint();
+        //cellSize = ((CellViewLayout)getParent()).getCellSize();
     }
 
 
 
     private int rows;
     private int cols;
-
+    private int cellSize;
+    private int locationRow;
+    private int locationCol;
     private Paint paint;
 
-    private int step;
+    public void setLocationRow(int locationRow) {
+        this.locationRow = locationRow;
+    }
+
+    public void setLocationCol(int locationCol) {
+        this.locationCol = locationCol;
+    }
+
+    public int getLocationRow() {
+        return locationRow;
+    }
+
+    public int getLocationCol() {
+        return locationCol;
+    }
+
+    public int getCellSize() {
+        return cellSize;
+    }
+
+    public void setCellSize(int cellSize) {
+        this.cellSize = cellSize;
+    }
 
     public int getRows() {
         return rows;
@@ -37,9 +66,6 @@ public class CellView extends View implements View.OnTouchListener {
     public void setRows(int rows) {
         this.rows = rows;
     }
-
-    private float size;
-    private float stepV, stepH;
 
     @Override
     public int getId() {
@@ -60,35 +86,48 @@ public class CellView extends View implements View.OnTouchListener {
         super.onDraw(canvas);
 
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.GRAY);
 
-        step = Math.min((getWidth() / cols), getHeight() / rows);
-        canvas.drawRect(0, 0, step * cols, step * rows, paint);
+        cellSize = Math.min((getWidth() / cols), getHeight() / rows);
+        canvas.drawRect(0, 0, cellSize * cols, cellSize * rows, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1);
-        canvas.drawRect(0, 0, step * cols, step * rows, paint);
+        canvas.drawRect(0, 0, cellSize * cols, cellSize * rows, paint);
         for(int i = 1; i < rows; i++) {
-            canvas.drawLine(0, step * i, step * cols, step * i,  paint);
+            canvas.drawLine(0, cellSize * i, cellSize * cols, cellSize * i,  paint);
         }
         for(int i = 1; i < cols; i++) {
-            canvas.drawLine(step * i, 0, step * i, step * rows, paint);
+            canvas.drawLine(cellSize * i, 0, cellSize * i, cellSize * rows, paint);
         }
 
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = event.getX();
-            float y = event.getY();
-
-            int r = (int)(y / step);
-            int c = (int)(x / step);
-
-            System.out.println("Row = " + r + " Column = " + c );
-            System.out.println("ID = " + getId());
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            ClipData data = ClipData.newPlainText("", "");
+            DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                    v);
+            v.startDrag(data, shadowBuilder, v, 0);
+            v.setVisibility(View.INVISIBLE);
+            Log.d("MyFavoriteTag", "MOTION STARTED");
+            return true;
+        } else {
+            Log.d("MyFavoriteTag", "MOTION DID NOT START");
+            return true;
         }
-        return true;
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int finalWidth = cols * cellSize;
+        int finalHeight = rows * cellSize;
+
+        super.onMeasure(
+                MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
+    }
+
 }
