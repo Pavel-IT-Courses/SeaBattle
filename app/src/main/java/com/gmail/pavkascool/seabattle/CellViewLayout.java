@@ -154,14 +154,16 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
             case DragEvent.ACTION_DROP:
                 // Dropped, reassign View to ViewGroup
                 CellView view = (CellView) event.getLocalState();
-                float childX = view.getTouchX();
-                float childY = view.getTouchY();
+                float cX = view.getCols() / 2.0f * cellSize;
+                float cY = view.getRows() / 2.0f * cellSize;
                 CellViewLayout owner = (CellViewLayout) view.getParent();
                 owner.removeView(view);
-                float cornerX = event.getX() - childX;
-                float cornerY = event.getY() - childY;
+                float cornerX = event.getX() - cX;
+                float cornerY = event.getY() - cY;
                 int r = (int)(cornerY / cellSize);
                 int c = (int)(cornerX / cellSize);
+                if(cornerX % cellSize > cellSize / 2.0) c++;
+                if(cornerY % cellSize > cellSize / 2.0) r++;
                 view.setLocationCol(c);
                 view.setLocationRow(r);
                 addView(view);
