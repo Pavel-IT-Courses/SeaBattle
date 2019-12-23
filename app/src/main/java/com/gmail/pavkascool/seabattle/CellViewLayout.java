@@ -169,7 +169,6 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                 addView(view);
                 view.setVisibility(View.VISIBLE);
                 Log.d(TAG, "DROPPED");
-
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
                 break;
