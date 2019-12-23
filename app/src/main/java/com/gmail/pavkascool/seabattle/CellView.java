@@ -33,6 +33,17 @@ public class CellView extends View implements View.OnTouchListener {
     private int cellSize;
     private int locationRow;
     private int locationCol;
+    private float touchX;
+    private float touchY;
+
+    public float getTouchX() {
+        return touchX;
+    }
+
+    public float getTouchY() {
+        return touchY;
+    }
+
     private Paint paint;
 
     public void setLocationRow(int locationRow) {
@@ -106,6 +117,8 @@ public class CellView extends View implements View.OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            touchX = event.getX();
+            touchY = event.getY();
             ClipData data = ClipData.newPlainText("", "");
             DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
                     v);

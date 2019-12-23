@@ -30,12 +30,13 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        System.out.println("ON LAYOUT");
+
         for(int i = 0; i < getChildCount(); i++) {
             CellView cv = (CellView)getChildAt(i);
             cv.layout(cellSize * cv.getLocationCol(), cellSize * cv.getLocationRow(),
-                    cellSize * (cv.getLocationCol() + cv.getCols()), cellSize * (cv.getLocationRow() + cv.getRows()));
-            System.out.println("Rows = " + cv.getRows() + " Cell Size = " + cv.getCellSize());
+                    cellSize * (cv.getLocationCol() + cv.getCols()),
+                    cellSize * (cv.getLocationRow() + cv.getRows()));
+
         }
     }
 
@@ -153,24 +154,23 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
             case DragEvent.ACTION_DROP:
                 // Dropped, reassign View to ViewGroup
                 CellView view = (CellView) event.getLocalState();
+                float childX = view.getTouchX();
+                float childY = view.getTouchY();
                 CellViewLayout owner = (CellViewLayout) view.getParent();
                 owner.removeView(view);
-                view.setLocationCol(5);
-                view.setLocationRow(7);
-                //LinearLayout container = (LinearLayout) v;
-                //container.addView(view);
+                float cornerX = event.getX() - childX;
+                float cornerY = event.getY() - childY;
+                int r = (int)(cornerY / cellSize);
+                int c = (int)(cornerX / cellSize);
+                view.setLocationCol(c);
+                view.setLocationRow(r);
                 addView(view);
                 view.setVisibility(View.VISIBLE);
                 Log.d(TAG, "DROPPED");
-                return true;
+
+                break;
             case DragEvent.ACTION_DRAG_ENDED:
-                /*CellView ship = (CellView)v;
-                ship.setLocationCol(5);
-                ship.setLocationRow(8);
-                invalidate();
-                ship.setVisibility(VISIBLE);
-                Log.d(TAG, "ENDED");*/
-                return true;
+                break;
             default:
                 break;
         }
