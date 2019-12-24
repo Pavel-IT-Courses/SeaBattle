@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 
 public class CellViewLayout extends ViewGroup implements View.OnTouchListener, View.OnDragListener {
@@ -40,7 +39,7 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         }
     }
 
-
+    private boolean isOut;
     private int rows;
     private int cols;
     private Paint paint;
@@ -141,36 +140,66 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
     @Override
     public boolean onDrag(View v, DragEvent event) {
+
+        CellView view = (CellView) event.getLocalState();
         Log.d(TAG, "ON DRAG");
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
                 // do nothing
                 Log.d(TAG, "STARTED");
-                return true;
+                break;
             case DragEvent.ACTION_DRAG_EXITED:
                 //v.setBackgroundDrawable(normalShape);
-                Log.d(TAG, "EXITED");
+                isOut = true;
+                Log.d(TAG, "EXITED + " + isOut);
+
                 break;
+            case DragEvent.ACTION_DRAG_ENTERED:
+                Log.d(TAG, "ENTERED");
+                isOut = false;
+                Log.d(TAG, "ENTERED + " + isOut);
+                break;
+
             case DragEvent.ACTION_DROP:
                 // Dropped, reassign View to ViewGroup
-                CellView view = (CellView) event.getLocalState();
+                //CellView view = (CellView) event.getLocalState();
+                if(isOut) {
+                    view.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "OUT IS " + isOut);
+                    Toast.makeText(getContext(), "OUT!", Toast.LENGTH_LONG).show();
+                    return false;
+                }
                 float cX = view.getCols() / 2.0f * cellSize;
                 float cY = view.getRows() / 2.0f * cellSize;
                 CellViewLayout owner = (CellViewLayout) view.getParent();
                 owner.removeView(view);
                 float cornerX = event.getX() - cX;
                 float cornerY = event.getY() - cY;
-                int r = (int)(cornerY / cellSize);
-                int c = (int)(cornerX / cellSize);
-                if(cornerX % cellSize > cellSize / 2.0) c++;
-                if(cornerY % cellSize > cellSize / 2.0) r++;
+                int r = (int) (cornerY / cellSize);
+                int c = (int) (cornerX / cellSize);
+                if (cornerX % cellSize > cellSize / 2.0) c++;
+                if (c < 0) c = 0;
+                if (c + view.getCols() > cols) c = cols - view.getCols();
+
+                if (cornerY % cellSize > cellSize / 2.0) r++;
+                if (r < 0) r = 0;
+                if (r + view.getRows() > rows) r = rows - view.getRows();
                 view.setLocationCol(c);
                 view.setLocationRow(r);
                 addView(view);
                 view.setVisibility(View.VISIBLE);
-                Log.d(TAG, "DROPPED");
+                Log.d(TAG, "DROPPED COL = " + c + " ROW = " + r + " OUT is " + isOut);
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
+                Log.d(TAG, "ENDED + " + isOut);
+                if(isOut) {
+                    view.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "in ENDED: OUT IS " + isOut);
+                    Toast.makeText(getContext(), "OUT!", Toast.LENGTH_LONG).show();
+                    isOut = true;
+                    return false;
+                }
+                //if(isOut) return false;
                 break;
             default:
                 break;
