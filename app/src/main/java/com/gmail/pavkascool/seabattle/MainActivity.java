@@ -1,8 +1,7 @@
 package com.gmail.pavkascool.seabattle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,10 +19,17 @@ public class MainActivity extends AppCompatActivity {
         //white.setOnDragListener(white);
         black = findViewById(R.id.black);
         ship = findViewById(R.id.ship);
-        //ship.setOnDragListener(white);
+        if (savedInstanceState != null) {
+            ship.setLocationCol(savedInstanceState.getInt("locCol"));
+            ship.setLocationRow(savedInstanceState.getInt("locRow"));
+        }
 
-        //cellSize = white.getCellSize();
-        //ship.setCellSize(cellSize);
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("locCol", ship.getLocationCol());
+        savedInstanceState.putInt("locRow", ship.getLocationRow());
     }
 }
