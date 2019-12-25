@@ -10,6 +10,7 @@
     <declare-styleable name="CellViewLayout">
         <attr name="cvl_cols" format="integer" />
         <attr name="cvl_rows" format="integer" />
+        <attr name="drag_allowed" format="boolean"/>
     </declare-styleable>
 
 </resources>

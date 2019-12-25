@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Sea Battle</string>
+    <string name="fight">Start Battle</string>
+    <string name="rotate">Rotate</string>
 </resources>

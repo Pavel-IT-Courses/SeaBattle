@@ -16,15 +16,25 @@ import androidx.annotation.Nullable;
 
 public class CellViewLayout extends ViewGroup implements View.OnTouchListener, View.OnDragListener {
 
+    private boolean isOut;
+    private boolean dragAllowed;
+    private int rows;
+    private int cols;
+    private Paint paint;
+    private int cellSize;
+    public final String TAG = "MyFavoriteTag";
+
     public CellViewLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener(this);
         TypedArray ar = context.obtainStyledAttributes(attrs, R.styleable.CellViewLayout, 0, 0);
         cols = ar.getInt(R.styleable.CellViewLayout_cvl_cols, 1);
         rows = ar.getInt(R.styleable.CellViewLayout_cvl_rows, 1);
+        dragAllowed = ar.getBoolean(R.styleable.CellViewLayout_drag_allowed, false);
         paint = new Paint();
         setWillNotDraw(false);
         setOnDragListener(this);
+        ar.recycle();
     }
 
     @Override
@@ -32,6 +42,7 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
         for(int i = 0; i < getChildCount(); i++) {
             CellView cv = (CellView)getChildAt(i);
+            if(cv.getParent() == this)
             cv.layout(cellSize * cv.getLocationCol(), cellSize * cv.getLocationRow(),
                     cellSize * (cv.getLocationCol() + cv.getCols()),
                     cellSize * (cv.getLocationRow() + cv.getRows()));
@@ -39,12 +50,13 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         }
     }
 
-    private boolean isOut;
-    private int rows;
-    private int cols;
-    private Paint paint;
-    private int cellSize;
-    public final String TAG = "MyFavoriteTag";
+    public boolean isDragAllowed() {
+        return dragAllowed;
+    }
+
+    public void setDragAllowed(boolean dragAllowed) {
+        this.dragAllowed = dragAllowed;
+    }
 
     public int getCellSize() {
         return cellSize;
@@ -91,7 +103,6 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         for(int i = 1; i < cols; i++) {
             canvas.drawLine(cellSize * i, 0, cellSize * i, cellSize * rows, paint);
         }
-        Log.d(TAG, "DRAWING..." + getId());
     }
 
     @Override
@@ -142,31 +153,27 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
     public boolean onDrag(View v, DragEvent event) {
 
         CellView view = (CellView) event.getLocalState();
-        Log.d(TAG, "ON DRAG");
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                // do nothing
-                Log.d(TAG, "STARTED");
+
                 break;
             case DragEvent.ACTION_DRAG_EXITED:
-                //v.setBackgroundDrawable(normalShape);
                 isOut = true;
-                Log.d(TAG, "EXITED + " + isOut);
+
 
                 break;
             case DragEvent.ACTION_DRAG_ENTERED:
-                Log.d(TAG, "ENTERED");
                 isOut = false;
-                Log.d(TAG, "ENTERED + " + isOut);
                 break;
 
             case DragEvent.ACTION_DROP:
-                // Dropped, reassign View to ViewGroup
-                //CellView view = (CellView) event.getLocalState();
+                if(!dragAllowed && !isOut) {
+                    view.setVisibility(View.VISIBLE);
+                    return false;
+                }
                 if(isOut) {
                     view.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "OUT IS " + isOut);
-                    Toast.makeText(getContext(), "OUT!", Toast.LENGTH_LONG).show();
+
                     return false;
                 }
                 float cX = view.getCols() / 2.0f * cellSize;
@@ -188,18 +195,14 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                 view.setLocationRow(r);
                 addView(view);
                 view.setVisibility(View.VISIBLE);
-                Log.d(TAG, "DROPPED COL = " + c + " ROW = " + r + " OUT is " + isOut);
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
-                Log.d(TAG, "ENDED + " + isOut);
                 if(isOut) {
                     view.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "in ENDED: OUT IS " + isOut);
-                    Toast.makeText(getContext(), "OUT!", Toast.LENGTH_LONG).show();
                     isOut = true;
                     return false;
                 }
-                //if(isOut) return false;
+
                 break;
             default:
                 break;

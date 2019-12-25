@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".BattleActivity">
 
     <com.gmail.pavkascool.seabattle.CellViewLayout
         android:layout_width="wrap_content"
@@ -13,10 +13,21 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:id="@+id/white"
+        app:drag_allowed="false"
         app:cvl_cols="10"
-        app:cvl_rows="5" />
+        app:cvl_rows="10">
+        <com.gmail.pavkascool.seabattle.CellView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ship"
+            app:location_col="3"
+            app:location_row="1"
+            app:cols="3"
+            app:rows="1"/>
+    </com.gmail.pavkascool.seabattle.CellViewLayout>
+
     <com.gmail.pavkascool.seabattle.CellViewLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,6 +36,7 @@
         android:layout_marginBottom="4dp"
         android:layout_weight="1"
         android:id="@+id/black"
+        app:drag_allowed="true"
         app:cvl_cols="10"
         app:cvl_rows="10" />
 

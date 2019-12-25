@@ -23,7 +23,6 @@ public class CellView extends View implements View.OnTouchListener {
         locationCol = ar.getInt(R.styleable.CellView_location_col, 0);
         locationRow = ar.getInt(R.styleable.CellView_location_row, 0);
         paint = new Paint();
-        //cellSize = ((CellViewLayout)getParent()).getCellSize();
     }
 
 

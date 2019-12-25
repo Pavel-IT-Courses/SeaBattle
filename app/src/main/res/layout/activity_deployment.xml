@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".BattleActivity">
+
+    <com.gmail.pavkascool.seabattle.CellViewLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="0.5"
+        android:id="@+id/start"
+        app:drag_allowed="false"
+        app:cvl_cols="10"
+        app:cvl_rows="5">
+
+        <com.gmail.pavkascool.seabattle.CellView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ship4"
+            app:location_col="0"
+            app:location_row="4"
+            app:cols="4"
+            app:rows="1"/>
+        <com.gmail.pavkascool.seabattle.CellView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ship3_1"
+            app:location_col="5"
+            app:location_row="4"
+            app:cols="3"
+            app:rows="1"/>
+        <com.gmail.pavkascool.seabattle.CellView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ship1_1"
+            app:location_col="9"
+            app:location_row="4"
+            app:cols="1"
+            app:rows="1"/>
+
+    </com.gmail.pavkascool.seabattle.CellViewLayout>
+
+    <com.gmail.pavkascool.seabattle.CellViewLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="1"
+        android:id="@+id/battlefield"
+        app:drag_allowed="true"
+        app:cvl_cols="10"
+        app:cvl_rows="10" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/rotate"
+            android:text="@string/rotate"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:id="@+id/fight"
+            android:text="@string/fight"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
