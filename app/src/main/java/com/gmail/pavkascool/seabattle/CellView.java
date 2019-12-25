@@ -14,6 +14,17 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 public class CellView extends View implements View.OnTouchListener {
+
+    private int rows;
+    private int cols;
+    private int cellSize;
+    private int locationRow;
+    private int locationCol;
+    int vertical;
+    private float touchX;
+    private float touchY;
+
+
     public CellView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener(this);
@@ -22,18 +33,13 @@ public class CellView extends View implements View.OnTouchListener {
         rows = ar.getInt(R.styleable.CellView_rows, 1);
         locationCol = ar.getInt(R.styleable.CellView_location_col, 0);
         locationRow = ar.getInt(R.styleable.CellView_location_row, 0);
+        vertical = ar.getInt(R.styleable.CellView_vertical, 0);
         paint = new Paint();
     }
 
-
-
-    private int rows;
-    private int cols;
-    private int cellSize;
-    private int locationRow;
-    private int locationCol;
-    private float touchX;
-    private float touchY;
+    public int getVertical() {
+        return vertical;
+    }
 
     public float getTouchX() {
         return touchX;
@@ -99,6 +105,7 @@ public class CellView extends View implements View.OnTouchListener {
         paint.setColor(Color.GRAY);
 
         cellSize = Math.min((getWidth() / cols), getHeight() / rows);
+
         canvas.drawRect(0, 0, cellSize * cols, cellSize * rows, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
@@ -140,6 +147,35 @@ public class CellView extends View implements View.OnTouchListener {
         super.onMeasure(
                 MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
+    }
+
+    public void rotate() {
+        if(cols > rows) {
+            switch(cols) {
+                case 3:
+                    locationCol++;
+                    locationRow--;
+                    int temp = cols;
+                    cols = rows;
+                    rows = temp;
+                    vertical = 1;
+                    break;
+
+            }
+        }
+        else if(rows > cols){
+            switch(rows) {
+                case 3:
+                    locationCol--;
+                    locationRow++;
+                    int temp = cols;
+                    cols = rows;
+                    rows = temp;
+                    vertical = 0;
+                    break;
+
+            }
+        }
     }
 
 }

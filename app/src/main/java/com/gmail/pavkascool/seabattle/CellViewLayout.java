@@ -18,6 +18,7 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
     private boolean isOut;
     private boolean dragAllowed;
+    private CellView ship;
     private int rows;
     private int cols;
     private Paint paint;
@@ -56,6 +57,14 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
     public void setDragAllowed(boolean dragAllowed) {
         this.dragAllowed = dragAllowed;
+    }
+
+    public CellView getShip() {
+        return ship;
+    }
+
+    public void setShip(CellView ship) {
+        this.ship = ship;
     }
 
     public int getCellSize() {
@@ -202,7 +211,9 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                     isOut = true;
                     return false;
                 }
-
+                else {
+                    if(view.getParent() == this) ship = view;
+                }
                 break;
             default:
                 break;

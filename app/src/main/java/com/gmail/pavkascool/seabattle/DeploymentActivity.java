@@ -24,8 +24,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
     private List<CellView> ships = new ArrayList<CellView>();
 
-    private CellView selectedShip;
-
     private Button rotate;
     private Button fight;
 
@@ -51,14 +49,15 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
         ships.add(ship3_1);
         ship1_1 = findViewById(R.id.ship1_1);
         ships.add(ship1_1);
+        ship2_1 = findViewById(R.id.ship2_1);
+        ships.add(ship2_1);
 
         if(savedInstanceState != null) {
             obtainFleetLocation(savedInstanceState);
         }
     }
 
-
-    @Override
+        @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         saveFleetLocation(savedInstanceState);
@@ -67,9 +66,17 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
+        CellView ship = battlefield.getShip();
         switch(v.getId()) {
             case R.id.rotate:
-                //TODO
+                if(ship == null) {
+                    Toast.makeText(this, "No Ship to rotate selected", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    battlefield.removeView(ship);
+                    ship.rotate();
+                    battlefield.addView(ship);
+                }
                 break;
 
             case R.id.fight:
@@ -86,10 +93,11 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     private void saveFleetLocation(Bundle bundle) {
         for(int i = 0; i < ships.size(); i++) {
             CellView ship = ships.get(i);
-            int[] location = new int[3];
+            int[] location = new int[4];
             location[0] = ((ViewGroup)(ship.getParent())).getId();
             location[1] = ship.getLocationCol();
             location[2] = ship.getLocationRow();
+            location[3] = ship.getVertical();
             String name = "ship" + i;
             bundle.putIntArray(name, location);
         }
@@ -101,9 +109,14 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
             int[] location = bundle.getIntArray("ship" + i);
             if(location[0] == R.id.battlefield) {
                 start.removeView(ship);
-                battlefield.addView(ship);
                 ship.setLocationCol(location[1]);
                 ship.setLocationRow(location[2]);
+                if(location[3] == 1) {
+                    int temp = ship.getCols();
+                    ship.setCols(ship.getRows());
+                    ship.setRows(temp);
+                }
+                battlefield.addView(ship);
             }
         }
     }

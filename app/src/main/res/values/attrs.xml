@@ -5,6 +5,7 @@
         <attr name="rows" format="integer" />
         <attr name="location_row" format="integer" />
         <attr name="location_col" format="integer" />
+        <attr name="vertical" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="CellViewLayout">
