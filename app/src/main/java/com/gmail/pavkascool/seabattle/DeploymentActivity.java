@@ -93,31 +93,32 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     private void saveFleetLocation(Bundle bundle) {
         for(int i = 0; i < ships.size(); i++) {
             CellView ship = ships.get(i);
-            int[] location = new int[4];
+            int[] location = new int[5];
             location[0] = ((ViewGroup)(ship.getParent())).getId();
             location[1] = ship.getLocationCol();
             location[2] = ship.getLocationRow();
-            location[3] = ship.getVertical();
+            location[3] = ship.getCols();
+            location[4] = ship.getRows();
             String name = "ship" + i;
             bundle.putIntArray(name, location);
         }
     }
 
     private void obtainFleetLocation(Bundle bundle) {
-        for(int i = 0; i < ships.size(); i++) {
+        for (int i = 0; i < ships.size(); i++) {
             CellView ship = ships.get(i);
             int[] location = bundle.getIntArray("ship" + i);
-            if(location[0] == R.id.battlefield) {
-                start.removeView(ship);
+            if (location[0] == R.id.battlefield) {
+                ((ViewGroup)(ship.getParent())).removeView(ship);
+
                 ship.setLocationCol(location[1]);
                 ship.setLocationRow(location[2]);
-                if(location[3] == 1) {
-                    int temp = ship.getCols();
-                    ship.setCols(ship.getRows());
-                    ship.setRows(temp);
-                }
+                ship.setCols(location[3]);
+                ship.setRows(location[4]);
+
                 battlefield.addView(ship);
             }
+
         }
     }
 }

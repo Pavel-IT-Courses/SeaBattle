@@ -37,10 +37,6 @@ public class CellView extends View implements View.OnTouchListener {
         paint = new Paint();
     }
 
-    public int getVertical() {
-        return vertical;
-    }
-
     public float getTouchX() {
         return touchX;
     }
@@ -158,7 +154,6 @@ public class CellView extends View implements View.OnTouchListener {
                     int temp = cols;
                     cols = rows;
                     rows = temp;
-                    vertical = 1;
                     break;
 
             }
@@ -171,7 +166,6 @@ public class CellView extends View implements View.OnTouchListener {
                     int temp = cols;
                     cols = rows;
                     rows = temp;
-                    vertical = 0;
                     break;
 
             }
