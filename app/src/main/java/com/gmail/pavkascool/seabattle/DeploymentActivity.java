@@ -84,6 +84,16 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, "Your Ships are not completely deployed yet! Complete Deployment!", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, BattleActivity.class);
+                    for(int i = 0; i < ships.size(); i++) {
+                        CellView shp = ships.get(i);
+                        String name = "shp" + i;
+                        int[] loc = new int[4];
+                        loc[0] = shp.getLocationCol();
+                        loc[1] = shp.getLocationRow();
+                        loc[2] = shp.getCols();
+                        loc[3] = shp.getRows();
+                        intent.putExtra(name, loc);
+                    }
                     startActivity(intent);
                 }
         }

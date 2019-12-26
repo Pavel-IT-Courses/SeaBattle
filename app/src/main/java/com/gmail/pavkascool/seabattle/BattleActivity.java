@@ -14,7 +14,7 @@ public class BattleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        //  super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
 
         white = findViewById(R.id.white);
@@ -30,7 +30,7 @@ public class BattleActivity extends AppCompatActivity {
             ship.setLocationRow(savedInstanceState.getInt("locRow"));
         }
 
-
+        super.onCreate(savedInstanceState);
 
     }
 
