@@ -18,14 +18,7 @@ tools:context=".BattleActivity">
     android:layout_gravity="center_vertical"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp">
-    <com.gmail.pavkascool.seabattle.CellView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ship"
-        app:location_col="3"
-        app:location_row="1"
-        app:cols="3"
-        app:rows="1"/>
+
 </com.gmail.pavkascool.seabattle.CellViewLayout>
 
 <com.gmail.pavkascool.seabattle.CellViewLayout
