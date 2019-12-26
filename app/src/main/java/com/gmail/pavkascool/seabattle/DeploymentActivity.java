@@ -117,6 +117,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     private void obtainFleetLocation(Bundle bundle) {
         for (int i = 0; i < ships.size(); i++) {
             CellView ship = ships.get(i);
+            System.out.println("SHIP IS " + ship);
             int[] location = bundle.getIntArray("ship" + i);
             if (location[0] == R.id.battlefield) {
                 ((ViewGroup)(ship.getParent())).removeView(ship);

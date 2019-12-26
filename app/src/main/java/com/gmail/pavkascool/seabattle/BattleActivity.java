@@ -37,14 +37,15 @@ public class BattleActivity extends AppCompatActivity {
             }
         }
         else {
-            for(int i = 0; i < ships.size(); i++) {
-                CellView ship = ships.get(i);
+
+            for(int i = 0; i < 4; i++) {
+                CellView ship = new CellView(this, null);
                 int[] location = savedInstanceState.getIntArray("ship" + i);
                 ship.setLocationCol(location[0]);
                 ship.setLocationRow(location[1]);
                 ship.setCols(location[2]);
                 ship.setRows(location[3]);
-                //ships.add(ship);
+                ships.add(ship);
                 white.addView(ship);
 
             }
