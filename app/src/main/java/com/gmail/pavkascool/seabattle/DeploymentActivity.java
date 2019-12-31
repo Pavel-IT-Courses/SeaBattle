@@ -25,8 +25,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
     private List<CellView> ships = new ArrayList<CellView>();
 
-    private Configuration battleConfig = null;
-
     private Button rotate;
     private Button fight;
 
@@ -46,64 +44,24 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
         start = findViewById(R.id.start);
         battlefield = findViewById(R.id.battlefield);
 
-        battleConfig = (Configuration)getLastCustomNonConfigurationInstance();
-        if(battleConfig == null) {
-            battleConfig = new Configuration();
-            for(int i = 0; i < start.getChildCount(); i++) {
-                CellView ship = (CellView)(start.getChildAt(i));
-                battleConfig.addShip(ship);
-            }
+        ship4 = findViewById(R.id.ship4);
+        ships.add(ship4);
+        ship3_1 = findViewById(R.id.ship3_1);
+        ships.add(ship3_1);
+        ship1_1 = findViewById(R.id.ship1_1);
+        ships.add(ship1_1);
+        ship2_1 = findViewById(R.id.ship2_1);
+        ships.add(ship2_1);
 
-        }
-
-        List<CellView> ships = battleConfig.getShips();
-        for(int i = 0; i < ships.size(); i++) {
-            CellView ship = ships.get(i);
-            Log.d("MyConfig", i + " Parent = " + ((ViewGroup)(ship.getParent())).getId() + " Cols = " + ship.getCols());
-            if(((ViewGroup)ship.getParent()).getId() == R.id.battlefield) {
-
-                Log.d("MyConfig", "Ship size = " + (ship.getCols() + ship.getRows()));
-                ((ViewGroup)(ship.getParent())).removeView(ship);
-                battlefield.addView(ship);
-            }
-            else {
-                ((ViewGroup)(ship.getParent())).removeView(ship);
-                start.addView(ship);
-            }
-
-
-
-
-//        ship4 = findViewById(R.id.ship4);
-//        ships.add(ship4);
-//        ship3_1 = findViewById(R.id.ship3_1);
-//        ships.add(ship3_1);
-//        ship1_1 = findViewById(R.id.ship1_1);
-//        ships.add(ship1_1);
-//        ship2_1 = findViewById(R.id.ship2_1);
-//        ships.add(ship2_1);
-//
-//        if(savedInstanceState != null) {
-//            obtainFleetLocation(savedInstanceState);
+        if(savedInstanceState != null) {
+            obtainFleetLocation(savedInstanceState);
         }
     }
 
-//        @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        super.onSaveInstanceState(savedInstanceState);
-//        saveFleetLocation(savedInstanceState);
-//    }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        battleConfig.getShips().clear();
-        for(int i = 0; i < start.getChildCount(); i++) {
-            battleConfig.addShip((CellView)(start.getChildAt(i)));
-        }
-        for(int i = 0; i < battlefield.getChildCount(); i++) {
-            battleConfig.addShip((CellView)(battlefield.getChildAt(i)));
-        }
-        return battleConfig;
+        @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        saveFleetLocation(savedInstanceState);
     }
 
     @Override
@@ -126,7 +84,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, "Your Ships are not completely deployed yet! Complete Deployment!", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, BattleActivity.class);
-                    List<CellView> ships = battleConfig.getShips();
 
                     for(int i = 0; i < ships.size(); i++) {
                         CellView shp = ships.get(i);
@@ -144,35 +101,35 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-//    private void saveFleetLocation(Bundle bundle) {
-//        for(int i = 0; i < ships.size(); i++) {
-//            CellView ship = ships.get(i);
-//            int[] location = new int[5];
-//            location[0] = ((ViewGroup)(ship.getParent())).getId();
-//            location[1] = ship.getLocationCol();
-//            location[2] = ship.getLocationRow();
-//            location[3] = ship.getCols();
-//            location[4] = ship.getRows();
-//            String name = "ship" + i;
-//            bundle.putIntArray(name, location);
-//        }
-//    }
-//
-//    private void obtainFleetLocation(Bundle bundle) {
-//        for (int i = 0; i < ships.size(); i++) {
-//            CellView ship = ships.get(i);
-//            int[] location = bundle.getIntArray("ship" + i);
-//            if (location[0] == R.id.battlefield) {
-//                ((ViewGroup)(ship.getParent())).removeView(ship);
-//
-//                ship.setLocationCol(location[1]);
-//                ship.setLocationRow(location[2]);
-//                ship.setCols(location[3]);
-//                ship.setRows(location[4]);
-//
-//                battlefield.addView(ship);
-//            }
-//
-//        }
-//    }
+    private void saveFleetLocation(Bundle bundle) {
+        for(int i = 0; i < ships.size(); i++) {
+            CellView ship = ships.get(i);
+            int[] location = new int[5];
+            location[0] = ((ViewGroup)(ship.getParent())).getId();
+            location[1] = ship.getLocationCol();
+            location[2] = ship.getLocationRow();
+            location[3] = ship.getCols();
+            location[4] = ship.getRows();
+            String name = "ship" + i;
+            bundle.putIntArray(name, location);
+        }
+    }
+
+    private void obtainFleetLocation(Bundle bundle) {
+        for (int i = 0; i < ships.size(); i++) {
+            CellView ship = ships.get(i);
+            int[] location = bundle.getIntArray("ship" + i);
+            if (location[0] == R.id.battlefield) {
+                ((ViewGroup)(ship.getParent())).removeView(ship);
+
+                ship.setLocationCol(location[1]);
+                ship.setLocationRow(location[2]);
+                ship.setCols(location[3]);
+                ship.setRows(location[4]);
+
+                battlefield.addView(ship);
+            }
+
+        }
+    }
 }
