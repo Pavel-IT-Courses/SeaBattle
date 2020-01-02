@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,12 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BattleActivity extends AppCompatActivity {
+public class BattleActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private final static int FLEET_SIZE = 10;
 
     private CellViewLayout white;
     private CellViewLayout black;
+    private CheckBox debug;
 
     private Configuration config;
 
@@ -29,6 +32,8 @@ public class BattleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_battle);
         white = findViewById(R.id.white);
         black = findViewById(R.id.black);
+        debug = findViewById(R.id.debug);
+        debug.setOnCheckedChangeListener(this);
 
         config = (Configuration)getLastCustomNonConfigurationInstance();
         if(config == null) {
@@ -58,6 +63,8 @@ public class BattleActivity extends AppCompatActivity {
             CellView ship = enemies.get(i);
             if(ship.getParent() != null) ((ViewGroup)(ship.getParent())).removeView(ship);
             black.addView(ship);
+            if(!debug.isChecked()) ship.setVisibility(View.INVISIBLE);
+            else ship.setVisibility(View.VISIBLE);
         }
 
     }
@@ -98,7 +105,6 @@ public class BattleActivity extends AppCompatActivity {
                     rowLoc = random.nextInt(bound + 1 - enemy.getRows());
                     enemy.setLocationCol(colLoc);
                     enemy.setLocationRow(rowLoc);
-                    //enemy.setVisibility(View.INVISIBLE);
                 }
                 while(black.isLocProhibited(colLoc, rowLoc, enemy));
                 if(enemy.getParent() != null) ((CellViewLayout)(enemy.getParent())).removeView(enemy);
@@ -108,5 +114,26 @@ public class BattleActivity extends AppCompatActivity {
         }
 
         return enemyShips;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked) {
+            showEnemies();
+        }
+        else {
+            hideEnemies();
+        }
+    }
+
+    private void showEnemies() {
+        for(int i = 0; i < black.getChildCount(); i++) {
+            black.getChildAt(i).setVisibility(View.VISIBLE);
+        }
+    }
+    private void hideEnemies() {
+        for(int i = 0; i < black.getChildCount(); i++) {
+            black.getChildAt(i).setVisibility(View.INVISIBLE);
+        }
     }
 }

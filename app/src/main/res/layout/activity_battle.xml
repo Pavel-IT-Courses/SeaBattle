@@ -33,4 +33,11 @@
         app:cvl_cols="10"
         app:cvl_rows="10" />
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Debug Mode"
+        android:id="@+id/debug"
+        />
+
 </LinearLayout>
