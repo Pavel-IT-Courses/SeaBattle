@@ -12,12 +12,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.util.List;
+
 import androidx.annotation.Nullable;
 
 public class CellViewLayout extends ViewGroup implements View.OnTouchListener, View.OnDragListener {
 
     private boolean isOut;
     private boolean dragAllowed;
+    private boolean isProhibited;
     private CellView ship;
     private int rows;
     private int cols;
@@ -100,7 +104,6 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLUE);
 
-        //cellSize = Math.min((getWidth() / cols), getHeight() / rows);
         canvas.drawRect(0, 0, cellSize * cols, cellSize * rows, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
@@ -164,13 +167,12 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         CellView view = (CellView) event.getLocalState();
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-
                 break;
+
             case DragEvent.ACTION_DRAG_EXITED:
                 isOut = true;
-
-
                 break;
+
             case DragEvent.ACTION_DRAG_ENTERED:
                 isOut = false;
                 break;
@@ -181,18 +183,15 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                     return false;
                 }
                 if(isOut) {
-                    view.setVisibility(View.VISIBLE);
-
                     return false;
                 }
                 float cX = view.getCols() / 2.0f * cellSize;
                 float cY = view.getRows() / 2.0f * cellSize;
-                CellViewLayout owner = (CellViewLayout) view.getParent();
-                owner.removeView(view);
                 float cornerX = event.getX() - cX;
                 float cornerY = event.getY() - cY;
                 int r = (int) (cornerY / cellSize);
                 int c = (int) (cornerX / cellSize);
+
                 if (cornerX % cellSize > cellSize / 2.0) c++;
                 if (c < 0) c = 0;
                 if (c + view.getCols() > cols) c = cols - view.getCols();
@@ -200,25 +199,62 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                 if (cornerY % cellSize > cellSize / 2.0) r++;
                 if (r < 0) r = 0;
                 if (r + view.getRows() > rows) r = rows - view.getRows();
+
+
+                if(isLocProhibited(c, r, view)) {
+                    isProhibited = true;
+                    return false;
+                }
+
+                CellViewLayout owner = (CellViewLayout) view.getParent();
+                owner.removeView(view);
                 view.setLocationCol(c);
                 view.setLocationRow(r);
                 addView(view);
                 view.setVisibility(View.VISIBLE);
                 break;
+
             case DragEvent.ACTION_DRAG_ENDED:
-                if(isOut) {
+                if(isOut || isProhibited) {
                     view.setVisibility(View.VISIBLE);
-                    isOut = true;
+                    isOut = false;
+                    isProhibited = false;
                     return false;
                 }
                 else {
                     if(view.getParent() == this) ship = view;
                 }
                 break;
+
             default:
                 break;
         }
         return true;
 
+    }
+
+    public boolean isLocProhibited(int c, int r, CellView view) {
+        int cols = view.getCols();
+        int rows = view.getRows();
+
+        if(c < 0) return true;
+        if(c + cols > this.cols) return true;
+        if(r < 0) return true;
+        if(r + rows > this.rows) return true;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            CellView ship = (CellView) getChildAt(i);
+            if (view != ship) {
+                for (int ic = c; ic < c + cols; ic++) {
+                    for (int ir = r; ir < r + rows; ir++) {
+                        for (Coordinates crd : ship.getPrihibitedZone()) {
+                            if (new Coordinates(ir, ic).equals(crd)) return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

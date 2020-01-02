@@ -1,5 +1,9 @@
 package com.gmail.pavkascool.seabattle;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Coordinates {
 
     private int[] coords = new int[2];
@@ -17,5 +21,33 @@ public class Coordinates {
     }
     public int getCol() {
         return coords[1];
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coordinates that = (Coordinates) o;
+        return Arrays.equals(coords, that.coords);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(coords);
+    }
+
+    public List<Coordinates> getZone() {
+        List<Coordinates> zone = new ArrayList<Coordinates>();
+        zone.add(this);
+        zone.add(new Coordinates(coords[0]-1, coords[1]));
+        zone.add(new Coordinates(coords[0]+1, coords[1]));
+        zone.add(new Coordinates(coords[0], coords[1]-1));
+        zone.add(new Coordinates(coords[0], coords[1]+1));
+        zone.add(new Coordinates(coords[0]-1, coords[1]-1));
+        zone.add(new Coordinates(coords[0]-1, coords[1]+1));
+        zone.add(new Coordinates(coords[0]+1, coords[1]+1));
+        zone.add(new Coordinates(coords[0]+1, coords[1]-1));
+
+        return zone;
     }
 }

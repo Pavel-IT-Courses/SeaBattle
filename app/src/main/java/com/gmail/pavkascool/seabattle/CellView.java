@@ -11,6 +11,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import androidx.annotation.Nullable;
 
 public class CellView extends View implements View.OnTouchListener {
@@ -25,6 +30,7 @@ public class CellView extends View implements View.OnTouchListener {
     private float touchY;
 
 
+
     public CellView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener(this);
@@ -36,6 +42,7 @@ public class CellView extends View implements View.OnTouchListener {
         vertical = ar.getInt(R.styleable.CellView_vertical, 0);
         paint = new Paint();
     }
+
 
     public float getTouchX() {
         return touchX;
@@ -62,6 +69,8 @@ public class CellView extends View implements View.OnTouchListener {
     public int getLocationCol() {
         return locationCol;
     }
+
+    public int getLength() { return cols + rows - 1; }
 
     public int getCellSize() {
         return cellSize;
@@ -118,18 +127,17 @@ public class CellView extends View implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             touchX = event.getX();
             touchY = event.getY();
             ClipData data = ClipData.newPlainText("", "");
-            DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
-                    v);
+            DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
             v.startDrag(data, shadowBuilder, v, 0);
+
             v.setVisibility(View.INVISIBLE);
-            Log.d("MyFavoriteTag", "MOTION STARTED");
             return true;
         } else {
-            Log.d("MyFavoriteTag", "MOTION DID NOT START");
             return true;
         }
     }
@@ -146,12 +154,28 @@ public class CellView extends View implements View.OnTouchListener {
     }
 
     public void rotate() {
+        int temp;
         if(cols > rows) {
+
             switch(cols) {
+                case 2:
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                    break;
+
                 case 3:
                     locationCol++;
                     locationRow--;
-                    int temp = cols;
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                    break;
+
+                case 4:
+                    locationCol++;
+                    locationRow--;
+                    temp = cols;
                     cols = rows;
                     rows = temp;
                     break;
@@ -160,16 +184,86 @@ public class CellView extends View implements View.OnTouchListener {
         }
         else if(rows > cols){
             switch(rows) {
+                case 2:
+                    locationCol--;
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                    break;
                 case 3:
                     locationCol--;
                     locationRow++;
-                    int temp = cols;
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                    break;
+                case 4:
+                    locationCol -= 2;
+                    locationRow++;
+                    temp = cols;
                     cols = rows;
                     rows = temp;
                     break;
 
             }
         }
+    }
+
+    public void rotateBack() {
+        int temp;
+        switch(getLength()) {
+            case 2:
+                if(cols > rows) {
+                    locationCol++;
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                }
+                else {
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                }
+                break;
+            case 3:
+            case 1:
+                rotate();
+                break;
+            case 4:
+                if(cols > rows) {
+                    locationCol += 2;
+                    locationRow--;
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                }
+                else {
+                    locationCol--;
+                    locationRow++;
+                    temp = cols;
+                    cols = rows;
+                    rows = temp;
+                }
+
+        }
+    }
+
+    public List<Coordinates> getCoordinates() {
+        List<Coordinates> coordintates = new ArrayList<Coordinates>();
+        for(int i = getLocationRow(); i < getLocationRow() + getRows(); i++) {
+            for(int j = getLocationCol(); j < getLocationCol() + getCols(); j++) {
+                coordintates.add(new Coordinates(i, j));
+            }
+        }
+        return coordintates;
+    }
+
+    public Set<Coordinates> getPrihibitedZone() {
+        Set<Coordinates> prohibitedZone = new HashSet<Coordinates>();
+        for(Coordinates coords: getCoordinates()) {
+            prohibitedZone.addAll(coords.getZone());
+        }
+        return prohibitedZone;
     }
 
 }

@@ -52,6 +52,18 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
         ships.add(ship1_1);
         ship2_1 = findViewById(R.id.ship2_1);
         ships.add(ship2_1);
+        ship3_2 = findViewById(R.id.ship3_2);
+        ships.add(ship3_2);
+        ship1_2 = findViewById(R.id.ship1_2);
+        ships.add(ship1_2);
+        ship1_3 = findViewById(R.id.ship1_3);
+        ships.add(ship1_3);
+        ship1_4 = findViewById(R.id.ship1_4);
+        ships.add(ship1_4);
+        ship2_2 = findViewById(R.id.ship2_2);
+        ships.add(ship2_2);
+        ship2_3 = findViewById(R.id.ship2_3);
+        ships.add(ship2_3);
 
         if(savedInstanceState != null) {
             obtainFleetLocation(savedInstanceState);
@@ -75,6 +87,10 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                 else {
                     battlefield.removeView(ship);
                     ship.rotate();
+                    if(battlefield.isLocProhibited(ship.getLocationCol(), ship.getLocationRow(), ship)) {
+                        ship.rotateBack();
+                        //Toast.makeText(this, "You cannot rotate your Ship in this position", Toast.LENGTH_SHORT).show();
+                    }
                     battlefield.addView(ship);
                 }
                 break;
