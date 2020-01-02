@@ -9,16 +9,20 @@ public class Configuration {
     private List<CellView> ships;
     private List<Coordinates> shots;
     private Set<Coordinates> neighbours;
+    private List<CellView> enemies;
 
     public Configuration() {
         ships = new ArrayList<CellView>();
         shots = new ArrayList<Coordinates>();
         neighbours = new HashSet<Coordinates>();
+        enemies = new ArrayList<CellView>();
+        System.out.println("ENEMIES = " + enemies);
     }
 
     public void addShip(CellView ship) {
         ships.add(ship);
     }
+    public void addEnemy(CellView enemy) { enemies.add(enemy); }
 
     public List<CellView> getShips() {
         return ships;
@@ -42,6 +46,14 @@ public class Configuration {
 
     public void setNeighbours(Set<Coordinates> neighbours) {
         this.neighbours = neighbours;
+    }
+
+    public List<CellView> getEnemies() {
+        return enemies;
+    }
+
+    public void setEnemies(List<CellView> enemies) {
+        this.enemies = enemies;
     }
 }
 

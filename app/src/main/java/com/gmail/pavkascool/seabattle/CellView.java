@@ -43,6 +43,17 @@ public class CellView extends View implements View.OnTouchListener {
         paint = new Paint();
     }
 
+    public void setOrientation(int length, int vertical) {
+        if(vertical == 0) {
+            cols = length;
+            rows = 1;
+        }
+        else {
+            cols = 1;
+            rows = length;
+        }
+    }
+
 
     public float getTouchX() {
         return touchX;
