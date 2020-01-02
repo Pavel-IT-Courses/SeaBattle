@@ -78,7 +78,7 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private List<CellView> getLocationsFromAI() {
-        if(config.getEnemies().size() == 10) return config.getEnemies();
+        if(config.getEnemies().size() == FLEET_SIZE) return config.getEnemies();
 
         List<CellView> enemyShips = new ArrayList<CellView>();
         int maxLength = 4;
