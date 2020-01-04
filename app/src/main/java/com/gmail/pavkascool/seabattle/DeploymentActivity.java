@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DeploymentActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -24,6 +25,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     private CellView ship1_1, ship1_2, ship1_3, ship1_4;
 
     private List<CellView> ships = new ArrayList<CellView>();
+    private Set<Coordinates> prohibited;
 
     private Button rotate;
     private Button fight;

@@ -3,6 +3,7 @@ package com.gmail.pavkascool.seabattle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BattleActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class BattleActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, OnFireListener {
 
     private final static int FLEET_SIZE = 10;
 
@@ -32,6 +33,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         setContentView(R.layout.activity_battle);
         white = findViewById(R.id.white);
         black = findViewById(R.id.black);
+        black.setOnFireListener(this);
         debug = findViewById(R.id.debug);
         debug.setOnCheckedChangeListener(this);
 
@@ -135,5 +137,22 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         for(int i = 0; i < black.getChildCount(); i++) {
             black.getChildAt(i).setVisibility(View.INVISIBLE);
         }
+    }
+
+
+    @Override
+    public void onFire(int c, int r) {
+        System.out.println("FIRE!");
+        for(int i = 0; i < black.getChildCount(); i++) {
+            CellView enemy = (CellView)(black.getChildAt(i));
+            for(Coordinates crd: enemy.getCoordinates()) {
+                if(crd.equals(new Coordinates(r, c))) {
+                    System.out.println("HIT!");
+                    config.damaged();
+                    return;
+                }
+            }
+        }
+        System.out.println("MISS! Enemies left: " + config.getEnemyFleet());
     }
 }

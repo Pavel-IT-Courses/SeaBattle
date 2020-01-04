@@ -29,6 +29,12 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
     private int cellSize;
     public final String TAG = "MyFavoriteTag";
 
+    private OnFireListener listener;
+
+    public void setOnFireListener(OnFireListener listener) {
+        this.listener = listener;
+    }
+
     public CellViewLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener(this);
@@ -119,16 +125,21 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        int rw = -1;
+        int cl = -1;
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
             float x = event.getX();
             float y = event.getY();
 
             int r = (int)(y / cellSize);
             int c = (int)(x / cellSize);
-            if (r < rows && c < cols) {
+            if (r < rows && c < cols && r >= 0 && c >= 0) {
                 System.out.println("Row = " + r + " Column = " + c);
                 System.out.println("ID = " + getId());
+                rw = r;
+                cl = c;
             }
+            if(listener != null) listener.onFire(cl, rw);
         }
         return true;
     }
