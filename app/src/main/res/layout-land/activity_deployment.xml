@@ -132,6 +132,12 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:id="@+id/auto"
+            android:text="@string/auto"/>iooooooooooooooo9uyjhhhhhhhhh
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:id="@+id/fight"
             android:text="@string/fight"/>

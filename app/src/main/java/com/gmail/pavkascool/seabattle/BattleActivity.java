@@ -2,8 +2,6 @@ package com.gmail.pavkascool.seabattle;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -25,12 +23,15 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
     private Configuration config;
 
-    private boolean againstAI = true;
+    private boolean isAgainstAI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
+        if(savedInstanceState == null) isAgainstAI = getIntent().getBooleanExtra("againstAI", true);
+        else isAgainstAI = savedInstanceState.getBoolean("againstAI");
+        System.out.println("Against AI = " + isAgainstAI);
         white = findViewById(R.id.white);
         black = findViewById(R.id.black);
         black.setOnFireListener(this);
@@ -73,17 +74,23 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("againstAI", isAgainstAI);
+    }
+
+    @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return config;
     }
 
     private List<CellView> getEnemyLocations() {
-        if(againstAI) return getLocationsFromAI();
+        if(isAgainstAI) return getLocationsFromAI();
         else return getLocationsByBlueTooth();
     }
 
     private List<CellView> getLocationsByBlueTooth() {
-        return null;
+        return new ArrayList<CellView>();
     }
 
     private List<CellView> getLocationsFromAI() {

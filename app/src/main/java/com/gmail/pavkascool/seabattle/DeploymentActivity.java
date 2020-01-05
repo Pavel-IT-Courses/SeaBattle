@@ -1,5 +1,6 @@
 package com.gmail.pavkascool.seabattle;
 
+import android.os.Handler;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class DeploymentActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,6 +31,9 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
     private Button rotate;
     private Button fight;
+    private Button auto;
+
+    private boolean isAgainstAI;
 
 
 
@@ -39,6 +44,9 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
         rotate = findViewById(R.id.rotate);
         rotate.setOnClickListener(this);
+
+        auto = findViewById(R.id.auto);
+        auto.setOnClickListener(this);
 
         fight = findViewById(R.id.fight);
         fight.setOnClickListener(this);
@@ -69,6 +77,10 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
         if(savedInstanceState != null) {
             obtainFleetLocation(savedInstanceState);
+            isAgainstAI = savedInstanceState.getBoolean("againstAI");
+        }
+        else {
+            isAgainstAI = getIntent().getBooleanExtra("againstAI", true);
         }
     }
 
@@ -76,6 +88,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         saveFleetLocation(savedInstanceState);
+        savedInstanceState.putBoolean("againstAI", isAgainstAI);
     }
 
     @Override
@@ -91,10 +104,50 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                     ship.rotate();
                     if(battlefield.isLocProhibited(ship.getLocationCol(), ship.getLocationRow(), ship)) {
                         ship.rotateBack();
-                        //Toast.makeText(this, "You cannot rotate your Ship in this position", Toast.LENGTH_SHORT).show();
+                        final Toast toast = Toast.makeText(this, "You cannot rotate your Ship in this position", Toast.LENGTH_SHORT);
+                        toast.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                toast.cancel();
+                            }
+                        }, 1000);
                     }
                     battlefield.addView(ship);
                 }
+                break;
+
+            case R.id.auto:
+                List<CellView> sps = new ArrayList<CellView>();
+                int maxLength = 4;
+                int count = 5;
+                Random random = new Random();
+                int bound = battlefield.getCols();
+                CellView s;
+                int colLoc;
+                int rowLoc;
+                for(int l = maxLength; l > 0; l--) {
+                    for(int num = 0; num < count - l; num++) {
+                        do {
+                            s = new CellView(this, null);
+                            int orientation = random.nextInt(2);
+                            s.setOrientation(l, orientation);
+                            colLoc = random.nextInt(bound + 1 - s.getCols());
+                            rowLoc = random.nextInt(bound + 1 - s.getRows());
+                            s.setLocationCol(colLoc);
+                            s.setLocationRow(rowLoc);
+                        }
+                        while(battlefield.isLocProhibited(colLoc, rowLoc, s));
+                        if(s.getParent() != null) ((CellViewLayout)(s.getParent())).removeView(s);
+                        battlefield.addView(s);
+                        sps.add(s);
+                        start.removeAllViews();
+                        ships = sps;
+
+                    }
+                }
+
                 break;
 
             case R.id.fight:
@@ -102,6 +155,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, "Your Ships are not completely deployed yet! Complete Deployment!", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, BattleActivity.class);
+                    intent.putExtra("againstAI", isAgainstAI);
 
                     for(int i = 0; i < ships.size(); i++) {
                         CellView shp = ships.get(i);
