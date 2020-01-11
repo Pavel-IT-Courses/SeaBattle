@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -25,14 +24,17 @@ public class CellView extends View implements View.OnTouchListener {
     private int cellSize;
     private int locationRow;
     private int locationCol;
-    int vertical;
+    private int vertical;
+    private int decks;
     private float touchX;
     private float touchY;
+    private boolean isDrowned;
 
 
 
     public CellView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
         setOnTouchListener(this);
         TypedArray ar = context.obtainStyledAttributes(attrs, R.styleable.CellView, 0, 0);
         cols = ar.getInt(R.styleable.CellView_cols, 1);
@@ -40,6 +42,8 @@ public class CellView extends View implements View.OnTouchListener {
         locationCol = ar.getInt(R.styleable.CellView_location_col, 0);
         locationRow = ar.getInt(R.styleable.CellView_location_row, 0);
         vertical = ar.getInt(R.styleable.CellView_vertical, 0);
+        decks = Math.max(cols, rows);
+        System.out.println("DECKS = " + decks);
         paint = new Paint();
     }
 
@@ -54,6 +58,25 @@ public class CellView extends View implements View.OnTouchListener {
         }
     }
 
+    public int getDecks() {
+        return decks;
+    }
+
+    public void setDecks(int decks) {
+        this.decks = decks;
+    }
+
+    public void damage() {
+        if(--decks == 0) isDrowned = true;
+        else isDrowned = false;
+    }
+    public boolean isDrowned() {
+        return isDrowned;
+    }
+
+    public void setDrowned(boolean drowned) {
+        isDrowned = drowned;
+    }
 
     public float getTouchX() {
         return touchX;

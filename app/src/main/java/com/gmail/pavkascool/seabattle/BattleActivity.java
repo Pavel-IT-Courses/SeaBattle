@@ -116,6 +116,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                     enemy = new CellView(this, null);
                     int orientation = random.nextInt(2);
                     enemy.setOrientation(l, orientation);
+                    enemy.setDecks(l);
                     colLoc = random.nextInt(bound + 1 - enemy.getCols());
                     rowLoc = random.nextInt(bound + 1 - enemy.getRows());
                     enemy.setLocationCol(colLoc);
@@ -159,14 +160,18 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         Coordinates coordinates = new Coordinates(r, c);
         if(config.getEnemyShots().contains(coordinates) || config.getEnemyHits().contains(coordinates)) {
             Toast.makeText(this, "Already checked, Fire again", Toast.LENGTH_SHORT).show();
-        } else {
+        }
+        else {
             for (int i = 0; i < black.getChildCount(); i++) {
                 CellView enemy = (CellView) (black.getChildAt(i));
+                System.out.println("SHIP WITH DECKS: " + enemy.getDecks() + " AMONG SHIPS: " + black.getChildCount());
                 for (Coordinates crd : enemy.getCoordinates()) {
                     if (crd.equals(coordinates)) {
                         System.out.println("HIT!");
-//                    config.damaged();
+                        enemy.damage();
+                        System.out.println(enemy.getDecks());
                         config.addEnemyHit(crd);
+                        if(enemy.isDrowned()) Toast.makeText(this, "DROWNED!", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
