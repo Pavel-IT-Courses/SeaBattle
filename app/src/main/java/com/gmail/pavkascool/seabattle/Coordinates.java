@@ -2,7 +2,9 @@ package com.gmail.pavkascool.seabattle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Coordinates {
 
@@ -36,8 +38,8 @@ public class Coordinates {
         return Arrays.hashCode(coords);
     }
 
-    public List<Coordinates> getZone() {
-        List<Coordinates> zone = new ArrayList<Coordinates>();
+    public Set<Coordinates> getZone() {
+        Set<Coordinates> zone = new HashSet<Coordinates>();
         zone.add(this);
         zone.add(new Coordinates(coords[0]-1, coords[1]));
         zone.add(new Coordinates(coords[0]+1, coords[1]));

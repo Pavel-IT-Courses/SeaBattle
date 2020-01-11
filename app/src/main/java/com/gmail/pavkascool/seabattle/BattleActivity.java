@@ -172,6 +172,9 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                         config.addEnemyHit(crd);
                         if(enemy.isDrowned()) {
                             Toast.makeText(this, "DROWNED!", Toast.LENGTH_SHORT).show();
+                            for(Coordinates cc: enemy.getCoordinates()) {
+                                config.addEnemyNeighbours(cc.getZone());
+                            }
                         }
                         return;
                     }

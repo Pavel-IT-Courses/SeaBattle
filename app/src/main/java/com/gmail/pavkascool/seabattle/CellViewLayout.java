@@ -166,6 +166,16 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                 canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
             }
         }
+        if (!neighbours.isEmpty()) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.YELLOW);
+
+            for (Coordinates crd: neighbours) {
+                int r = crd.getRow();
+                int c = crd.getCol();
+                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
+            }
+        }
 
     }
 

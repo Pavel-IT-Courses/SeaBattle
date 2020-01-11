@@ -30,6 +30,7 @@ public class Configuration {
         enemyShips = new ArrayList<CellView>();
         enemyHits = new ArrayList<Coordinates>();
         enemyShots = new ArrayList<Coordinates>();
+        enemyNeighbours = new HashSet<Coordinates>();
         enemyFleet = 20;
         System.out.println("ENEMIES = " + enemyShips);
     }
@@ -46,6 +47,12 @@ public class Configuration {
         enemyShots.add(coordinates);
         notifyEnemy();
     }
+
+    public void addEnemyNeighbours(Set<Coordinates>neighbours) {
+        enemyNeighbours.addAll(neighbours);
+        notifyEnemy();
+    }
+
     public List<Coordinates> getEnemyHits() {
         return enemyHits;
     }
