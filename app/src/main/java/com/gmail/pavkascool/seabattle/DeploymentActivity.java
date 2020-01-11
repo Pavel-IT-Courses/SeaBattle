@@ -1,7 +1,7 @@
 package com.gmail.pavkascool.seabattle;
 
 import android.os.Handler;
-import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -93,7 +93,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        CellView ship = battlefield.getShip();
+        CellView ship = battlefield.getSelectedShip();
         switch(v.getId()) {
             case R.id.rotate:
                 if(ship == null) {
@@ -144,7 +144,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                         sps.add(s);
                         start.removeAllViews();
                         ships = sps;
-
                     }
                 }
 

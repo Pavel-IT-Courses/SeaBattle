@@ -6,14 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.Nullable;
 
@@ -22,11 +23,15 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
     private boolean isOut;
     private boolean dragAllowed;
     private boolean isProhibited;
-    private CellView ship;
+    private CellView selectedShip;
     private int rows;
     private int cols;
     private Paint paint;
     private int cellSize;
+
+    private List<Coordinates> shots;
+    private List<Coordinates> hits;
+    private Set<Coordinates> neighbours;
     public final String TAG = "MyFavoriteTag";
 
     private OnFireListener listener;
@@ -37,6 +42,9 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
 
     public CellViewLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        hits = new ArrayList<Coordinates>();
+        shots = new ArrayList<Coordinates>();
+        neighbours = new HashSet<Coordinates>();
         setOnTouchListener(this);
         TypedArray ar = context.obtainStyledAttributes(attrs, R.styleable.CellViewLayout, 0, 0);
         cols = ar.getInt(R.styleable.CellViewLayout_cvl_cols, 1);
@@ -61,6 +69,23 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         }
     }
 
+
+
+//
+
+
+    public void setShots(List<Coordinates> shots) {
+        this.shots = shots;
+    }
+
+    public void setNeighbours(Set<Coordinates> neighbours) {
+        this.neighbours = neighbours;
+    }
+
+    public void setHits(List<Coordinates> hits) {
+        this.hits = hits;
+    }
+
     public boolean isDragAllowed() {
         return dragAllowed;
     }
@@ -69,12 +94,12 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         this.dragAllowed = dragAllowed;
     }
 
-    public CellView getShip() {
-        return ship;
+    public CellView getSelectedShip() {
+        return selectedShip;
     }
 
-    public void setShip(CellView ship) {
-        this.ship = ship;
+    public void setSelectedShip(CellView selectedShip) {
+        this.selectedShip = selectedShip;
     }
 
     public int getCellSize() {
@@ -121,6 +146,27 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         for(int i = 1; i < cols; i++) {
             canvas.drawLine(cellSize * i, 0, cellSize * i, cellSize * rows, paint);
         }
+        if (!shots.isEmpty()) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.GREEN);
+
+            for (Coordinates crd: shots) {
+                int r = crd.getRow();
+                int c = crd.getCol();
+                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
+            }
+        }
+        if (!hits.isEmpty()) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.RED);
+
+            for (Coordinates crd: hits) {
+                int r = crd.getRow();
+                int c = crd.getCol();
+                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
+            }
+        }
+
     }
 
     @Override
@@ -233,7 +279,7 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
                     return false;
                 }
                 else {
-                    if(view.getParent() == this) ship = view;
+                    if(view.getParent() == this) selectedShip = view;
                 }
                 break;
 

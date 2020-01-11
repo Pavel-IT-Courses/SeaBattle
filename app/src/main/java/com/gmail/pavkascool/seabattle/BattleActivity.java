@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +36,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         white = findViewById(R.id.white);
         black = findViewById(R.id.black);
         black.setOnFireListener(this);
+
         debug = findViewById(R.id.debug);
         debug.setOnCheckedChangeListener(this);
 
@@ -53,6 +55,10 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             }
 
         }
+
+        config.setAsFriend(white);
+        config.setAsEnemy(black);
+
         List<CellView> ships = config.getShips();
         for(int i = 0; i < ships.size(); i++) {
             CellView ship = ships.get(i);
@@ -60,8 +66,8 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             white.addView(ship);
 
         }
-        config.setEnemies(getEnemyLocations());
-        List<CellView> enemies = config.getEnemies();
+        config.setEnemyShips(getEnemyLocations());
+        List<CellView> enemies = config.getEnemyShips();
         for(int i = 0; i < enemies.size(); i++) {
             CellView ship = enemies.get(i);
             if(ship.getParent() != null) ((ViewGroup)(ship.getParent())).removeView(ship);
@@ -94,7 +100,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     }
 
     private List<CellView> getLocationsFromAI() {
-        if(config.getEnemies().size() == FLEET_SIZE) return config.getEnemies();
+        if(config.getEnemyShips().size() == FLEET_SIZE) return config.getEnemyShips();
 
         List<CellView> enemyShips = new ArrayList<CellView>();
         int maxLength = 4;
@@ -150,16 +156,23 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     @Override
     public void onFire(int c, int r) {
         System.out.println("FIRE!");
-        for(int i = 0; i < black.getChildCount(); i++) {
-            CellView enemy = (CellView)(black.getChildAt(i));
-            for(Coordinates crd: enemy.getCoordinates()) {
-                if(crd.equals(new Coordinates(r, c))) {
-                    System.out.println("HIT!");
-                    config.damaged();
-                    return;
+        Coordinates coordinates = new Coordinates(r, c);
+        if(config.getEnemyShots().contains(coordinates) || config.getEnemyHits().contains(coordinates)) {
+            Toast.makeText(this, "Already checked, Fire again", Toast.LENGTH_SHORT).show();
+        } else {
+            for (int i = 0; i < black.getChildCount(); i++) {
+                CellView enemy = (CellView) (black.getChildAt(i));
+                for (Coordinates crd : enemy.getCoordinates()) {
+                    if (crd.equals(coordinates)) {
+                        System.out.println("HIT!");
+//                    config.damaged();
+                        config.addEnemyHit(crd);
+                        return;
+                    }
                 }
             }
+            config.addEnemyShot(coordinates);
+            System.out.println("MISS! Enemies left: " + config.getEnemyFleet());
         }
-        System.out.println("MISS! Enemies left: " + config.getEnemyFleet());
     }
 }
