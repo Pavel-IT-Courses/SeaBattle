@@ -3,6 +3,7 @@ package com.gmail.pavkascool.seabattle;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class Configuration {
@@ -22,6 +23,12 @@ public class Configuration {
     private int fleet;
     private int enemyFleet;
 
+    private boolean isYourTurn;
+
+    private int turn, shot;
+
+    private boolean isOver, yourVictory;
+
     public Configuration() {
         ships = new ArrayList<CellView>();
         hits = new ArrayList<Coordinates>();
@@ -31,8 +38,58 @@ public class Configuration {
         enemyHits = new ArrayList<Coordinates>();
         enemyShots = new ArrayList<Coordinates>();
         enemyNeighbours = new HashSet<Coordinates>();
-        enemyFleet = 20;
-        System.out.println("ENEMIES = " + enemyShips);
+        enemyFleet = 10;
+        Random random = new Random();
+        isYourTurn = random.nextBoolean();
+        if(isYourTurn) {
+            turn = 1;
+        }
+
+    }
+
+    public void sinkEnemy() {
+        enemyFleet--;
+    }
+
+    public boolean isYourTurn() {
+        return isYourTurn;
+    }
+
+    public void setYourTurn(boolean yourTurn) {
+        isYourTurn = yourTurn;
+    }
+
+    public int getTurnNumber() {
+        return turn;
+    }
+
+    public void incrementTurn() {
+        turn++;
+    }
+
+    public int getShotNumber() {
+        return shot;
+    }
+
+    public void incrementShot() {
+        shot++;
+    }
+
+    public boolean isOver() {
+        return isOver;
+    }
+
+    public void setOver(boolean over) {
+        isOver = over;
+    }
+
+    public boolean isYourVictory() {
+        return yourVictory;
+    }
+
+    public void setYourVictory(boolean yourVictory) {
+        isOver = true;
+        this.yourVictory = yourVictory;
     }
 
     public void addShip(CellView ship) {

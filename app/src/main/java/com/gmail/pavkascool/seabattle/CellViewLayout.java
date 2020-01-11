@@ -136,6 +136,38 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         paint.setColor(Color.BLUE);
 
         canvas.drawRect(0, 0, cellSize * cols, cellSize * rows, paint);
+
+        if (!shots.isEmpty()) {
+
+            paint.setColor(Color.GREEN);
+
+            for (Coordinates crd: shots) {
+                int r = crd.getRow();
+                int c = crd.getCol();
+                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
+            }
+        }
+        if (!neighbours.isEmpty()) {
+
+            paint.setColor(Color.YELLOW);
+
+            for (Coordinates crd: neighbours) {
+                int r = crd.getRow();
+                int c = crd.getCol();
+                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
+            }
+        }
+        if (!hits.isEmpty()) {
+
+            paint.setColor(Color.RED);
+
+            for (Coordinates crd: hits) {
+                int r = crd.getRow();
+                int c = crd.getCol();
+                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
+            }
+        }
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1);
@@ -145,36 +177,6 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         }
         for(int i = 1; i < cols; i++) {
             canvas.drawLine(cellSize * i, 0, cellSize * i, cellSize * rows, paint);
-        }
-        if (!shots.isEmpty()) {
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.GREEN);
-
-            for (Coordinates crd: shots) {
-                int r = crd.getRow();
-                int c = crd.getCol();
-                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
-            }
-        }
-        if (!hits.isEmpty()) {
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.RED);
-
-            for (Coordinates crd: hits) {
-                int r = crd.getRow();
-                int c = crd.getCol();
-                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
-            }
-        }
-        if (!neighbours.isEmpty()) {
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.YELLOW);
-
-            for (Coordinates crd: neighbours) {
-                int r = crd.getRow();
-                int c = crd.getCol();
-                canvas.drawRect(cellSize * c, cellSize * r, cellSize * (c + 1), cellSize * (r + 1), paint);
-            }
         }
 
     }
@@ -190,8 +192,6 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
             int r = (int)(y / cellSize);
             int c = (int)(x / cellSize);
             if (r < rows && c < cols && r >= 0 && c >= 0) {
-                System.out.println("Row = " + r + " Column = " + c);
-                System.out.println("ID = " + getId());
                 rw = r;
                 cl = c;
             }

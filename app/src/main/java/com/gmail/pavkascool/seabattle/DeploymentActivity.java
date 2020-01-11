@@ -146,7 +146,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                         ships = sps;
                     }
                 }
-
+                auto.setEnabled(false);
                 break;
 
             case R.id.fight:

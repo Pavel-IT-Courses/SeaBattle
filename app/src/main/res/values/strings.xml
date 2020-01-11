@@ -6,4 +6,5 @@
     <string name="AI">Play Against AI</string>
     <string name="person">Play Against A Person</string>
     <string name="auto">Autodeployment</string>
+    <string name="debug_mode">Debug Mode</string>
 </resources>

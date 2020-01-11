@@ -33,11 +33,26 @@
         app:cvl_cols="10"
         app:cvl_rows="10" />
 
-    <CheckBox
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Debug Mode"
-        android:id="@+id/debug"
-        />
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/debug_mode"
+            android:id="@+id/debug"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/turn"
+            tools:text="Your Turn"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"/>
+    </LinearLayout>
 
 </LinearLayout>
