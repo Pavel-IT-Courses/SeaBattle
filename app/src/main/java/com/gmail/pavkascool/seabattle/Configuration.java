@@ -38,6 +38,7 @@ public class Configuration {
         enemyHits = new ArrayList<Coordinates>();
         enemyShots = new ArrayList<Coordinates>();
         enemyNeighbours = new HashSet<Coordinates>();
+        fleet = 10;
         enemyFleet = 10;
         Random random = new Random();
         isYourTurn = random.nextBoolean();
@@ -49,6 +50,9 @@ public class Configuration {
 
     public void sinkEnemy() {
         enemyFleet--;
+    }
+    public void sink() {
+        fleet--;
     }
 
     public boolean isYourTurn() {

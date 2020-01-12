@@ -254,6 +254,11 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                             for(Coordinates cc: ship.getCoordinates()) {
                                 config.addNeighbours(cc.getZone());
                             }
+                            config.sink();
+                            if(config.getFleet() == 0) {
+                                Toast.makeText(this, "YOU LOST!", Toast.LENGTH_LONG).show();
+                                return;
+                            }
                         }
                         else {
                             player.getReport(coordinates, RESULT_DAMAGE);
