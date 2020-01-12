@@ -23,6 +23,10 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     public static final String YOUR_VICTORY = "You Have Won!";
     public static final String YOUR_DEFEAT = "You Have Lost!";
 
+    public static final int RESULT_MISS = 0;
+    public static final int RESULT_DAMAGE = 1;
+    public static final int RESULT_DROWN = 2;
+
     private CellViewLayout white;
     private CellViewLayout black;
     private CheckBox debug;
@@ -35,6 +39,8 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     private int turnNo;
     private int shotNo;
 
+    AIPlayer player;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +48,9 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         if (savedInstanceState == null)
             isAgainstAI = getIntent().getBooleanExtra("againstAI", true);
         else isAgainstAI = savedInstanceState.getBoolean("againstAI");
-        System.out.println("Against AI = " + isAgainstAI);
+
+        player = AIPlayer.getInstance();
+
         white = findViewById(R.id.white);
         black = findViewById(R.id.black);
         black.setOnFireListener(this);
@@ -63,6 +71,8 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                 ship.setLocationRow(location[1]);
                 ship.setCols(location[2]);
                 ship.setRows(location[3]);
+                int decks = Math.max(location[2], location[3]);
+                ship.setDecks(decks);
                 config.addShip(ship);
             }
 
@@ -71,16 +81,6 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         config.setAsFriend(white);
         config.setAsEnemy(black);
 
-        String whoseTurn = null;
-        if(config.isOver()) {
-            whoseTurn = config.isYourVictory()? YOUR_VICTORY : YOUR_DEFEAT;
-        } else {
-            whoseTurn = config.isYourTurn() ? YOURS : ENEMYS;
-        }
-        turn.setText(whoseTurn);
-
-        turnNo = config.getTurnNumber();
-        shotNo = config.getShotNumber();
 
         List<CellView> ships = config.getShips();
         for (int i = 0; i < ships.size(); i++) {
@@ -99,8 +99,27 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             else ship.setVisibility(View.VISIBLE);
         }
 
+        String whoseTurn = null;
+        if(config.isOver()) {
+            whoseTurn = config.isYourVictory()? YOUR_VICTORY : YOUR_DEFEAT;
+        } else {
+            whoseTurn = config.isYourTurn() ? YOURS : ENEMYS;
+        }
+        turn.setText(whoseTurn);
+
+        turnNo = config.getTurnNumber();
+        shotNo = config.getShotNumber();
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!config.isYourTurn()) {
+            turn.setText(ENEMYS);
+            sufferAttacks();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -191,7 +210,6 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                     for (Coordinates crd : enemy.getCoordinates()) {
                         if (crd.equals(coordinates)) {
                             enemy.damage();
-                            System.out.println(enemy.getDecks());
                             config.addEnemyHit(crd);
                             if (enemy.isDrowned()) {
                                 Toast.makeText(this, "DROWNED!", Toast.LENGTH_SHORT).show();
@@ -214,7 +232,49 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                 config.setYourTurn(false);
                 turn.setText(ENEMYS);
                 config.addEnemyShot(coordinates);
+                sufferAttacks();
             }
+
         }
     }
+
+    private void sufferAttacks() {
+        outer: while(!config.isYourTurn()) {
+            Coordinates coordinates = player.takeTarget();
+            System.out.println("ENEMY FIRES: " + coordinates.getCol() + " " + coordinates.getRow());
+            for(int i = 0; i < white.getChildCount(); i++) {
+                CellView ship = (CellView)(white.getChildAt(i));
+                for(Coordinates crd: ship.getCoordinates()) {
+                    if(coordinates.equals(crd)) {
+                        ship.damage();
+                        System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
+                        config.addHit(crd);
+                        if(ship.isDrowned()) {
+                            player.getReport(coordinates, RESULT_DROWN);
+                            for(Coordinates cc: ship.getCoordinates()) {
+                                config.addNeighbours(cc.getZone());
+                            }
+                        }
+                        else {
+                            player.getReport(coordinates, RESULT_DAMAGE);
+                        }
+                        continue outer;
+                    }
+                }
+//                player.getReport(coordinates, RESULT_MISS);
+//                config.addShot(coordinates);
+//                config.setYourTurn(true);
+//                turn.setText(YOURS);
+            }
+            player.getReport(coordinates, RESULT_MISS);
+            config.addShot(coordinates);
+            config.setYourTurn(true);
+            turn.setText(YOURS);
+        }
+    }
+    private void getShelled(Random random) {
+
+    }
+
+
 }

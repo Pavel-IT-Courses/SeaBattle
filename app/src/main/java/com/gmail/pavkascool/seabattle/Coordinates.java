@@ -52,4 +52,40 @@ public class Coordinates {
 
         return zone;
     }
+
+    public Coordinates nextHorizontal() {
+        return new Coordinates(getRow(), getCol() + 1);
+    }
+
+    public Coordinates nextHorizontal(int maxCol) {
+        if(getCol() + 1 > maxCol) return null;
+        return new Coordinates(getRow(), getCol() + 1);
+    }
+
+    public Coordinates prevHorizontal() {
+        return new Coordinates(getRow(), getCol() - 1);
+    }
+
+    public Coordinates prevHorizontal(int minCol) {
+        if(getCol() - 1 < minCol) return null;
+        return new Coordinates(getRow(), getCol() - 1);
+    }
+
+    public Coordinates nextVertical() {
+        return new Coordinates(getRow() + 1, getCol());
+    }
+
+    public Coordinates nextVertical(int maxRow) {
+        if(getRow() + 1 > maxRow) return null;
+        return new Coordinates(getRow() + 1, getCol());
+    }
+
+    public Coordinates prevVertical() {
+        return new Coordinates(getRow() - 1, getCol());
+    }
+
+    public Coordinates prevVertical(int minRow) {
+        if(getRow() - 1 < minRow) return null;
+        return new Coordinates(getRow() - 1, getCol());
+    }
 }

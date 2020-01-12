@@ -105,9 +105,23 @@ public class Configuration {
         notifyEnemy();
     }
 
-    public void addEnemyNeighbours(Set<Coordinates>neighbours) {
-        enemyNeighbours.addAll(neighbours);
+    public void addEnemyNeighbours(Set<Coordinates> neighbour) {
+        enemyNeighbours.addAll(neighbour);
         notifyEnemy();
+    }
+
+    public void addHit(Coordinates coordinates) {
+        hits.add(coordinates);
+        notifyFriend();
+    }
+
+    public void addShot(Coordinates coordinates) {
+        shots.add(coordinates);
+        notifyFriend();
+    }
+    public void addNeighbours(Set<Coordinates> neighbour) {
+        neighbours.addAll(neighbour);
+        notifyFriend();
     }
 
     public List<Coordinates> getEnemyHits() {
@@ -199,13 +213,13 @@ public class Configuration {
 
     public void setAsFriend(CellViewLayout friend) {
         this.friend = friend;
-        notyfyFriend();
+        notifyFriend();
     }
     public void setAsEnemy(CellViewLayout enemy) {
         this.enemy = enemy;
         notifyEnemy();
     }
-    public void notyfyFriend() {
+    public void notifyFriend() {
         friend.setShots(shots);
         friend.setHits(hits);
         friend.setNeighbours(neighbours);

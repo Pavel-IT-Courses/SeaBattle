@@ -43,7 +43,6 @@ public class CellView extends View implements View.OnTouchListener {
         locationRow = ar.getInt(R.styleable.CellView_location_row, 0);
         vertical = ar.getInt(R.styleable.CellView_vertical, 0);
         decks = Math.max(cols, rows);
-        System.out.println("DECKS = " + decks);
         paint = new Paint();
     }
 
