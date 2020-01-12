@@ -30,6 +30,8 @@ public class CellView extends View implements View.OnTouchListener {
     private float touchY;
     private boolean isDrowned;
 
+    private List<int[]> damages;
+
 
 
     public CellView(Context context, @Nullable AttributeSet attrs) {
@@ -44,6 +46,8 @@ public class CellView extends View implements View.OnTouchListener {
         vertical = ar.getInt(R.styleable.CellView_vertical, 0);
         decks = Math.max(cols, rows);
         paint = new Paint();
+
+        damages = new ArrayList<int[]>();
     }
 
     public void setOrientation(int length, int vertical) {
@@ -69,6 +73,14 @@ public class CellView extends View implements View.OnTouchListener {
         if(--decks == 0) isDrowned = true;
         else isDrowned = false;
     }
+
+    public void damage(Coordinates coordinates) {
+        if(--decks == 0) isDrowned = true;
+        else isDrowned = false;
+        damages.add(transformParentCoordinates(coordinates));
+        invalidate();
+    }
+
     public boolean isDrowned() {
         return isDrowned;
     }
@@ -145,6 +157,13 @@ public class CellView extends View implements View.OnTouchListener {
         cellSize = Math.min((getWidth() / cols), getHeight() / rows);
 
         canvas.drawRect(0, 0, cellSize * cols, cellSize * rows, paint);
+
+        paint.setColor(Color.RED);
+        for(int[] ar: damages) {
+            System.out.println("SO MANY DAMAGES... " + damages.size());
+            canvas.drawRect(cellSize * ar[0], cellSize * ar[1], cellSize * (ar[0] + 1), cellSize * (ar[1] + 1), paint);
+        }
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1);
@@ -279,6 +298,13 @@ public class CellView extends View implements View.OnTouchListener {
                 }
 
         }
+    }
+
+    public int[] transformParentCoordinates(Coordinates coordinates) {
+        int[] transform = new int[2];
+        transform[0] = coordinates.getCol() - getLocationCol();
+        transform[1] = coordinates.getRow() - getLocationRow();
+        return transform;
     }
 
     public List<Coordinates> getCoordinates() {

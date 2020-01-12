@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class BattleActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, OnFireListener {
 
@@ -240,13 +241,14 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
     private void sufferAttacks() {
         outer: while(!config.isYourTurn()) {
+
             Coordinates coordinates = player.takeTarget();
             System.out.println("ENEMY FIRES: " + coordinates.getCol() + " " + coordinates.getRow());
             for(int i = 0; i < white.getChildCount(); i++) {
                 CellView ship = (CellView)(white.getChildAt(i));
                 for(Coordinates crd: ship.getCoordinates()) {
                     if(coordinates.equals(crd)) {
-                        ship.damage();
+                        ship.damage(crd);
                         System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
                         config.addHit(crd);
                         if(ship.isDrowned()) {
@@ -266,17 +268,55 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                         continue outer;
                     }
                 }
-//                player.getReport(coordinates, RESULT_MISS);
-//                config.addShot(coordinates);
-//                config.setYourTurn(true);
-//                turn.setText(YOURS);
             }
             player.getReport(coordinates, RESULT_MISS);
             config.addShot(coordinates);
             config.setYourTurn(true);
             turn.setText(YOURS);
         }
+        //new Thread(runnable).start();
     }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            outer: while(!config.isYourTurn()) {
+                Coordinates coordinates = player.takeTarget();
+                System.out.println("ENEMY FIRES: " + coordinates.getCol() + " " + coordinates.getRow());
+                for(int i = 0; i < white.getChildCount(); i++) {
+                    CellView ship = (CellView)(white.getChildAt(i));
+                    for(Coordinates crd: ship.getCoordinates()) {
+                        if(coordinates.equals(crd)) {
+                            ship.damage(crd);
+                            System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
+                            config.addHit(crd);
+                            if(ship.isDrowned()) {
+                                player.getReport(coordinates, RESULT_DROWN);
+                                for(Coordinates cc: ship.getCoordinates()) {
+                                    config.addNeighbours(cc.getZone());
+                                }
+                                config.sink();
+                                if(config.getFleet() == 0) {
+                                    Toast.makeText(BattleActivity.this, "YOU LOST!", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                            else {
+                                player.getReport(coordinates, RESULT_DAMAGE);
+                            }
+                            continue outer;
+                        }
+                    }
+                }
+                player.getReport(coordinates, RESULT_MISS);
+                config.addShot(coordinates);
+                config.setYourTurn(true);
+                turn.setText(YOURS);
+            }
+        }
+    };
+
+
     private void getShelled(Random random) {
 
     }
