@@ -281,7 +281,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         @Override
         public void run() {
             outer: while(!config.isYourTurn()) {
-                Coordinates coordinates = player.takeTarget();
+                final Coordinates coordinates = player.takeTarget();
                 System.out.println("ENEMY FIRES: " + coordinates.getCol() + " " + coordinates.getRow());
                 for(int i = 0; i < white.getChildCount(); i++) {
                     CellView ship = (CellView)(white.getChildAt(i));
@@ -289,11 +289,24 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                         if(coordinates.equals(crd)) {
                             ship.damage(crd);
                             System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
-                            config.addHit(crd);
+                            BattleActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    config.addHit(coordinates);
+                                }
+                            });
+                            //config.addHit(crd);
                             if(ship.isDrowned()) {
                                 player.getReport(coordinates, RESULT_DROWN);
-                                for(Coordinates cc: ship.getCoordinates()) {
-                                    config.addNeighbours(cc.getZone());
+                                for(final Coordinates cc: ship.getCoordinates()) {
+
+                                    BattleActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            config.addNeighbours(cc.getZone());
+                                        }
+                                    });
+                                    //config.addNeighbours(cc.getZone());
                                 }
                                 config.sink();
                                 if(config.getFleet() == 0) {
@@ -309,10 +322,23 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                     }
                 }
                 player.getReport(coordinates, RESULT_MISS);
-                config.addShot(coordinates);
+                BattleActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        config.addShot(coordinates);;
+                    }
+                });
+                //config.addShot(coordinates);
                 config.setYourTurn(true);
                 turn.setText(YOURS);
             }
+        }
+    };
+
+    Runnable notifier = new Runnable() {
+        @Override
+        public void run() {
+            config.notifyFriend();
         }
     };
 
