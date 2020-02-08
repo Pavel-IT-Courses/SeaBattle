@@ -38,7 +38,7 @@ public class Configuration {
         enemyHits = new ArrayList<Coordinates>();
         enemyShots = new ArrayList<Coordinates>();
         enemyNeighbours = new HashSet<Coordinates>();
-        fleet = 10;
+        fleet = 0;
         enemyFleet = 10;
         Random random = new Random();
         isYourTurn = random.nextBoolean();

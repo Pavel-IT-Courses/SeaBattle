@@ -119,6 +119,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.auto:
+                battlefield.removeAllViews();
                 List<CellView> sps = new ArrayList<CellView>();
                 int maxLength = 4;
                 int count = 5;

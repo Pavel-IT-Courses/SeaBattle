@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Sea Battle</string>
+    <string name="fight">Start Battle</string>
+    <string name="rotate">Rotate</string>
+    <string name="start">Start Your New Game</string>
+    <string name="AI">Play Against AI</string>
+    <string name="person">Play Against A Person</string>
+    <string name="auto">Autodeployment</string>
+    <string name="debug_mode">Debug Mode</string>
+    <string name="stat">Current Score: Victories - %s, Defeates - %s</string>
+</resources>

@@ -32,7 +32,7 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
     private List<Coordinates> shots;
     private List<Coordinates> hits;
     private Set<Coordinates> neighbours;
-    public final String TAG = "MyFavoriteTag";
+    
 
     private OnFireListener listener;
 

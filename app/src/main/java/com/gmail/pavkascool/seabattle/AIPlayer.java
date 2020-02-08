@@ -38,6 +38,10 @@ public class AIPlayer {
         return instance;
     }
 
+    public List<Coordinates> getShots() {
+        return shots;
+    }
+
     private AIPlayer() {
         initEnemyFleet();
     }
@@ -157,19 +161,23 @@ public class AIPlayer {
         if(damagedEnemy.size() == 1) {
             Coordinates coordinates = damagedEnemy.get(0);
 
-            if(measureHorizontalSpace(coordinates, true) < minLength) {
+            if(measureHorizontalSpace(coordinates, true) < Math.max(2, minLength)) {
+                System.out.println("WE HAVE TO SHOT VERTICALLY");
                 return shotVertical(coordinates);
             }
 
-            if(measureVerticalSpace(coordinates, true) < minLength) {
+            if(measureVerticalSpace(coordinates, true) < Math.max(2, minLength)) {
+                System.out.println("WE HAVE TO SHOT HORIZONTALLY");
                 return shotHorizontal(coordinates);
             }
 
             boolean vertical = random.nextBoolean();
             if(vertical) {
+                System.out.println("Random vertical shot");
                 return shotVertical(coordinates);
             }
             else {
+                System.out.println("Random Horizontal shot");
                 return shotHorizontal(coordinates);
             }
         }
