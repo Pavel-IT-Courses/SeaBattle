@@ -1,7 +1,13 @@
-package com.gmail.pavkascool.update;
+package com.gmail.pavkascool.update.delegates;
 
 import android.app.Application;
 import android.os.AsyncTask;
+
+import com.gmail.pavkascool.update.BattleApplication;
+import com.gmail.pavkascool.update.database.BattleDatabase;
+import com.gmail.pavkascool.update.database.Result;
+import com.gmail.pavkascool.update.database.ResultDao;
+import com.gmail.pavkascool.update.utils.Statistics;
 
 import java.util.List;
 
@@ -18,7 +24,9 @@ public class StartModel extends AndroidViewModel {
 
     public StartModel(@NonNull Application application) {
         super(application);
-        db = ((BattleApplication)application).getBattleDatabase();
+        BattleApplication ba = (BattleApplication)application;
+        db = ba.getBattleDatabase();
+        ba.setStartModel(this);
 
     }
 
@@ -47,4 +55,5 @@ public class StartModel extends AndroidViewModel {
         };
         task.execute();
     }
+
 }

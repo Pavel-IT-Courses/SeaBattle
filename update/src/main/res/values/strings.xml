@@ -7,5 +7,8 @@
     <string name="person">Play Against A Person</string>
     <string name="auto">Autodeployment</string>
     <string name="debug_mode">Debug Mode</string>
-    <string name="stat">Current Score: Victories - %s, Defeates - %s</string>
+    <string name="stat">Current Score: Victories - %s, Defeats - %s</string>
+    <string name="intro">Chose A Paired Device From The List Below Or Create A New Connection</string>
+    <string name="empty">The List Is Empty</string>
+    <string name="connections">Look For New Connections</string>
 </resources>

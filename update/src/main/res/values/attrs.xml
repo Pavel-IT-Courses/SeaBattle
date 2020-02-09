@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CellView">
+        <attr name="cols" format="integer" />
+        <attr name="rows" format="integer" />
+        <attr name="location_row" format="integer" />
+        <attr name="location_col" format="integer" />
+        <attr name="vertical" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="CellViewLayout">
+        <attr name="cvl_cols" format="integer" />
+        <attr name="cvl_rows" format="integer" />
+        <attr name="drag_allowed" format="boolean"/>
+    </declare-styleable>
+
+</resources>

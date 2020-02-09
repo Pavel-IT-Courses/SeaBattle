@@ -2,14 +2,13 @@ package com.gmail.pavkascool.update;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,8 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.gmail.pavkascool.update.database.Result;
+import com.gmail.pavkascool.update.delegates.StartModel;
+import com.gmail.pavkascool.update.utils.Statistics;
+
 import java.util.List;
 
 public class StartActivity extends AppCompatActivity implements View.OnClickListener {
@@ -27,6 +30,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     private Button person;
     private TextView stat;
     private RecyclerView recyclerView;
+    private BluetoothAdapter bluetoothAdapter;
 
     private LiveData<Statistics> statisticsLiveData;
     private Statistics statistic;
@@ -43,6 +47,8 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         recyclerView.setLayoutManager(gridLayoutManager);
         adapter = new ResultAdapter();
         recyclerView.setAdapter(adapter);
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         StartModel startModel = ViewModelProviders.of(this).get(StartModel.class);
 
@@ -77,11 +83,16 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         Intent intent = null;
         if(v.getId() == R.id.ai) {
             BattleApplication.getInstance().setAgainstAI(true);
+            intent = new Intent(this, DeploymentActivity.class);
         }
         if(v.getId() == R.id.person) {
+            if(bluetoothAdapter == null) {
+                Toast.makeText(this, "You Need To Have Bluetooth", Toast.LENGTH_LONG).show();
+                return;
+            }
             BattleApplication.getInstance().setAgainstAI(false);
+            intent = new Intent(this, ConnectionActivity.class);
         }
-        intent = new Intent(this, DeploymentActivity.class);
         startActivity(intent);
     }
 

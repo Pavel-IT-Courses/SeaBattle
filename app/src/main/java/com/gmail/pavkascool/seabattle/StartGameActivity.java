@@ -11,6 +11,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     private Button ai;
     private Button person;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

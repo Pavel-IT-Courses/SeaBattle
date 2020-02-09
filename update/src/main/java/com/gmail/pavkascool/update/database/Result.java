@@ -1,4 +1,4 @@
-package com.gmail.pavkascool.update;
+package com.gmail.pavkascool.update.database;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

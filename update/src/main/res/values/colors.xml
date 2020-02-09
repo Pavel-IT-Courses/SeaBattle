@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorStart">#099999</color>
+    <color name="colorSea">#0000FF</color>
+    <color name="colorHit">#FF0000</color>
+    <color name="colorNeighbour">#FFFF00</color>
+    <color name="colorShot">#00FF00</color>
 </resources>

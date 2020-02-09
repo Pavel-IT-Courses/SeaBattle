@@ -1,4 +1,6 @@
-package com.gmail.pavkascool.update;
+package com.gmail.pavkascool.update.utils;
+
+import com.gmail.pavkascool.update.database.Result;
 
 import java.util.List;
 

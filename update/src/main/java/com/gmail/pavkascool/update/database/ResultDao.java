@@ -1,4 +1,4 @@
-package com.gmail.pavkascool.update;
+package com.gmail.pavkascool.update.database;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ public interface ResultDao {
     @Query("SELECT * FROM RESULT")
     List<Result> getAll();
 
-    @Query("SELECT COUNT(*) FROM RESULT WHERE WINNER='YOU'")
+    @Query("SELECT COUNT(*) FROM RESULT WHERE WINNER='you'")
     int victories();
 
-    @Query("SELECT COUNT(*) FROM RESULT WHERE WINNER!='YOU'")
+    @Query("SELECT COUNT(*) FROM RESULT WHERE WINNER!='you'")
     int defeats();
 
     @Insert

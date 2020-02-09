@@ -2,6 +2,9 @@ package com.gmail.pavkascool.update;
 
 import android.app.Application;
 
+import com.gmail.pavkascool.update.database.BattleDatabase;
+import com.gmail.pavkascool.update.delegates.StartModel;
+
 import androidx.room.Room;
 
 public class BattleApplication extends Application {
@@ -9,6 +12,7 @@ public class BattleApplication extends Application {
     private static BattleApplication instance;
     private boolean againstAI;
     private BattleDatabase db;
+    private StartModel startModel;
 
     public boolean isAgainstAI() {
         return againstAI;
@@ -20,6 +24,14 @@ public class BattleApplication extends Application {
 
     public static BattleApplication getInstance() {
         return instance;
+    }
+
+    public StartModel getStartModel() {
+        return startModel;
+    }
+
+    public void setStartModel(StartModel startModel) {
+        this.startModel = startModel;
     }
 
     @Override

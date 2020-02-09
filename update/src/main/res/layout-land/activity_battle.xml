@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="horizontal"
+tools:context=".BattleActivity">
+
+
+<com.gmail.pavkascool.update.views.CellViewLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    app:cvl_cols="10"
+    app:cvl_rows="10"
+    android:layout_weight="1"
+    android:id="@+id/white"
+    android:layout_gravity="center_vertical"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
+
+</com.gmail.pavkascool.update.views.CellViewLayout>
+
+<com.gmail.pavkascool.update.views.CellViewLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    app:cvl_cols="10"
+    app:cvl_rows="10"
+    android:layout_weight="1"
+    android:id="@+id/black"
+    android:layout_gravity="center_vertical"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/debug_mode"
+            android:id="@+id/debug"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/turn"
+            tools:text="Your Turn"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"/>
+    </LinearLayout>
+
+</LinearLayout>
