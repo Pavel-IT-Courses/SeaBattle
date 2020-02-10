@@ -24,7 +24,6 @@ import java.util.List;
 public class ConnectionActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView intro, empty;
-    private Button searchConnections;
     private RecyclerView recyclerView;
     private LiveData<List<String>> liveData;
     private List<String> connections;
@@ -37,8 +36,6 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_connection);
         intro = findViewById(R.id.intro);
         empty = findViewById(R.id.empty);
-        searchConnections = findViewById(R.id.searchConnections);
-        searchConnections.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, getResources().getConfiguration().orientation);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -50,9 +47,14 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onChanged(List<String> strings) {
                 connections = strings;
+                if(connections == null || connections.isEmpty()) {
+                    empty.setText(getString(R.string.empty));
+                }
+                else empty.setText("");
                 adapter.notifyDataSetChanged();
             }
         });
+
         if(connections == null || connections.isEmpty()) {
             empty.setText(getString(R.string.empty));
         }
@@ -61,9 +63,7 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.searchConnections) {
-            model.searchConnections();
-        }
+
     }
 
     private class ConnectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

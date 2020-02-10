@@ -54,33 +54,4 @@ public class ConnectionModel extends AndroidViewModel {
         }
     }
 
-    public void searchConnections() {
-        boolean success = bluetoothAdapter.startDiscovery();
-        if(!success) {
-            Toast.makeText(application, "No More Available Opponents", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            mReceiver = new BroadcastReceiver(){
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    if(BluetoothDevice.ACTION_FOUND.equals(action)) {
-                        BluetoothDevice device= intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                        newDevices.add(device.getName()+": "+ device.getAddress());
-                        System.out.println(" DEVICE FOUND : " + device.getName()+": "+ device.getAddress());
-                        updateConnections();
-                    }
-                }
-
-            };
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            application.registerReceiver(mReceiver, filter);
-        }
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        application.unregisterReceiver(mReceiver);
-    }
 }
