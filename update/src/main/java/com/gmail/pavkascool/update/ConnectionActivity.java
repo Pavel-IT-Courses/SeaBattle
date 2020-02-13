@@ -24,6 +24,7 @@ import java.util.List;
 public class ConnectionActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView intro, empty;
+    private Button server;
     private RecyclerView recyclerView;
     private LiveData<List<String>> liveData;
     private List<String> connections;
@@ -36,6 +37,8 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_connection);
         intro = findViewById(R.id.intro);
         empty = findViewById(R.id.empty);
+        server = findViewById(R.id.server);
+        server.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, getResources().getConfiguration().orientation);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -63,7 +66,14 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-
+        if(v.getId() == R.id.server) {
+            model.connectOpponent(null);
+            System.out.println("I am launching Server!");
+        }
+        else {
+            String dev = ((TextView)v).getText().toString();
+            model.connectOpponent(dev);
+        }
     }
 
     private class ConnectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

@@ -8,7 +8,8 @@
     <string name="auto">Autodeployment</string>
     <string name="debug_mode">Debug Mode</string>
     <string name="stat">Current Score: Victories - %s, Defeats - %s</string>
-    <string name="intro">Chose A Paired Device From The List Below Or Create First A New Connection From The Device Bluetooth Settings Section and Re-Start The Application</string>
+    <string name="intro">As Client Chose A Paired Device From The List Below Or Pair It First and Re-Start</string>
     <string name="empty">The List Is Empty</string>
     <string name="connections">Look For New Connections</string>
+    <string name="server">As Server</string>
 </resources>

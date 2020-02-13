@@ -46,6 +46,7 @@ public class AIPlayer implements Player {
         initEnemyFleet();
     }
 
+    @Override
     public Coordinates takeTarget() {
 
         shotNo++;
@@ -53,6 +54,7 @@ public class AIPlayer implements Player {
         else return targetOnDamaged();
     }
 
+    @Override
     public void getReport(Coordinates coordinates, int result) {
         switch(result) {
             case RESULT_MISS:
