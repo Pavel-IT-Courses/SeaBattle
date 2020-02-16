@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class DeploymentActivity extends AppCompatActivity  implements View.OnClickListener{
+public class DeploymentActivity extends AppCompatActivity implements View.OnClickListener, ConnectionListener {
     private CellViewLayout start;
     private CellViewLayout battlefield;
 
@@ -82,8 +82,9 @@ public class DeploymentActivity extends AppCompatActivity  implements View.OnCli
             isAgainstAI = savedInstanceState.getBoolean("againstAI");
         }
         else {
-            isAgainstAI = getIntent().getBooleanExtra("againstAI", true);
+            isAgainstAI = BattleApplication.getInstance().isAgainstAI();
         }
+
     }
 
     @Override
@@ -157,7 +158,7 @@ public class DeploymentActivity extends AppCompatActivity  implements View.OnCli
                     Toast.makeText(this, "Your Ships are not completely deployed yet! Complete Deployment!", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, BattleActivity.class);
-                    intent.putExtra("againstAI", isAgainstAI);
+                    //intent.putExtra("againstAI", isAgainstAI);
 
                     for(int i = 0; i < ships.size(); i++) {
                         CellView shp = ships.get(i);
@@ -169,8 +170,12 @@ public class DeploymentActivity extends AppCompatActivity  implements View.OnCli
                         loc[3] = shp.getRows();
                         intent.putExtra(name, loc);
                     }
-                    startActivity(intent);
-                    finish();
+                    if(!isAgainstAI) {
+                        new Connector(this).sendAndReceive(intent, ships);
+                    } else {
+                        startActivity(intent);
+                        finish();
+                    }
                 }
         }
 
@@ -206,5 +211,15 @@ public class DeploymentActivity extends AppCompatActivity  implements View.OnCli
             }
 
         }
+    }
+
+    @Override
+    public void onSocketConnected() {
+
+    }
+
+    @Override
+    public void onReceive(Intent intent) {
+        startActivity(intent);
     }
 }

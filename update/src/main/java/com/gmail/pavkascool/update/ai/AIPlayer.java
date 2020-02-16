@@ -18,7 +18,7 @@ public class AIPlayer implements Player {
     private final static int RANDOM_SHOTS = 10;
 
     private static AIPlayer instance;
-    public final String name = "AI Player";
+    private final String name = "AI Player";
     private int rows = 10;
     private int columns = 10;
     private List<Coordinates> damagedEnemy = new ArrayList<>();
@@ -37,7 +37,7 @@ public class AIPlayer implements Player {
 //        if(instance == null) instance = new AIPlayer();
 //        return instance;
 //    }
-
+    @Override
     public List<Coordinates> getShots() {
         return shots;
     }
@@ -67,6 +67,10 @@ public class AIPlayer implements Player {
                 shipIsDrowned(coordinates);
                 break;
         }
+    }
+    @Override
+    public String getName() {
+        return name;
     }
 
     private void shipIsDrowned(Coordinates coordinates) {

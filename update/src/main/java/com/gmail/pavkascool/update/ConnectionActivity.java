@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,17 +21,17 @@ import android.widget.TextView;
 
 import com.gmail.pavkascool.update.delegates.ConnectionModel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public class ConnectionActivity extends AppCompatActivity implements View.OnClickListener {
+public class ConnectionActivity extends AppCompatActivity implements View.OnClickListener, ConnectionListener {
 
     private TextView intro, empty;
     private Button server;
     private RecyclerView recyclerView;
-    private LiveData<List<String>> liveData;
     private List<String> connections;
     private ConnectionAdapter adapter;
-    private ConnectionModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,24 +41,21 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
         empty = findViewById(R.id.empty);
         server = findViewById(R.id.server);
         server.setOnClickListener(this);
+
+        Set<BluetoothDevice> pairedDevices = BattleApplication.getInstance().getPairedDevices();
+        if(pairedDevices.size()>0){
+            connections = new ArrayList<>();
+            for(BluetoothDevice device: pairedDevices){
+                connections.add(device.getName()+ " MAC: "+ device.getAddress());
+            }
+        }
+
         recyclerView = findViewById(R.id.recycler);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, getResources().getConfiguration().orientation);
         recyclerView.setLayoutManager(gridLayoutManager);
         adapter = new ConnectionAdapter();
         recyclerView.setAdapter(adapter);
-        model = ViewModelProviders.of(this).get(ConnectionModel.class);
-        liveData = model.getData();
-        liveData.observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> strings) {
-                connections = strings;
-                if(connections == null || connections.isEmpty()) {
-                    empty.setText(getString(R.string.empty));
-                }
-                else empty.setText("");
-                adapter.notifyDataSetChanged();
-            }
-        });
+        adapter.notifyDataSetChanged();
 
         if(connections == null || connections.isEmpty()) {
             empty.setText(getString(R.string.empty));
@@ -67,14 +66,29 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.server) {
-            model.connectOpponent(null);
-            System.out.println("I am launching Server!");
+            //model.connectOpponent(null);
+            new Connector(this).setConnectionAsServer();
+
         }
         else {
             String dev = ((TextView)v).getText().toString();
-            model.connectOpponent(dev);
+            //model.connectOpponent(dev);
+            new Connector(this).setConnectionAsClient(dev);
         }
     }
+
+    @Override
+    public void onSocketConnected() {
+        Intent intent = new Intent(this, DeploymentActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onReceive(Intent intent) {
+
+    }
+
 
     private class ConnectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

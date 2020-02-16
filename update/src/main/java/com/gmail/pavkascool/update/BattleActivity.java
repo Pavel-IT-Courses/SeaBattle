@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BattleActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, OnFireListener{
 
-    private static final int FLEET_SIZE = 10;
+    public static final int FLEET_SIZE = 10;
     public static final String YOURS = "Your Turn";
     public static final String ENEMYS = "Enemy's Turn";
     public static final String YOUR_VICTORY = "You Have Won!";
@@ -50,7 +50,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     private int turnNo;
     private int shotNo;
 
-    private AIPlayer player;
+    private Player player;
     private BattleDatabase db;
 
     @Override
@@ -59,11 +59,12 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         setContentView(R.layout.activity_battle);
         db = BattleApplication.getInstance().getBattleDatabase();
         if (savedInstanceState == null)
-            isAgainstAI = getIntent().getBooleanExtra("againstAI", true);
+            isAgainstAI = BattleApplication.getInstance().isAgainstAI();
         else isAgainstAI = savedInstanceState.getBoolean("againstAI");
 
-        //player = AIPlayer.getInstance();
-        player = new AIPlayer();
+
+        if(isAgainstAI) player = new AIPlayer();
+        else player = new HumanPlayer();
 
         white = findViewById(R.id.white);
         black = findViewById(R.id.black);
@@ -153,7 +154,24 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     }
 
     private List<CellView> getLocationsByBlueTooth() {
-        return new ArrayList<CellView>();
+        if(config.getEnemyShips().size() == FLEET_SIZE) return config.getEnemyShips();
+
+        Intent intent = getIntent();
+        System.out.println("INTENT is " + intent);
+        int[] enemies = intent.getIntArrayExtra("enemies");
+        int index = 0;
+        List<CellView> enemyShips = new ArrayList<>();
+        for(int i = 0; i < FLEET_SIZE; i++) {
+            CellView enemy = new CellView(this, null);
+            enemy.setLocationCol(enemies[index++]);
+            enemy.setLocationRow(enemies[index++]);
+            enemy.setCols(enemies[index++]);
+            enemy.setRows(enemies[index++]);
+            enemyShips.add(enemy);
+            black.addView(enemy);
+        }
+
+        return enemyShips;
     }
 
     private List<CellView> getLocationsFromAI() {
@@ -378,7 +396,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     private Result getResult(boolean yourVictory) {
         String dateString = new SimpleDateFormat("dd-MM-yy hh:mm").format(new Date());
         String turn = String.valueOf(config.getTurnNumber());
-        String winner = yourVictory? "you" : player.name;
+        String winner = yourVictory? "you" : player.getName();
         return new Result(dateString, winner, turn);
     }
 
