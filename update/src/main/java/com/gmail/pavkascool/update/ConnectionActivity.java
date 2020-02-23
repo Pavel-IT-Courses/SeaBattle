@@ -67,13 +67,19 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if(v.getId() == R.id.server) {
             //model.connectOpponent(null);
-            new Connector(this).setConnectionAsServer();
+            //new Connector(this).setConnectionAsServer();
+            Connector connector = Connector.getInstance();
+            connector.setListener(this);
+            connector.setConnectionAsServer();
 
         }
         else {
             String dev = ((TextView)v).getText().toString();
             //model.connectOpponent(dev);
-            new Connector(this).setConnectionAsClient(dev);
+            //new Connector(this).setConnectionAsClient(dev);
+            Connector connector = Connector.getInstance();
+            connector.setListener(this);
+            connector.setConnectionAsClient(dev);
         }
     }
 
@@ -89,6 +95,11 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Connector.getInstance().removeListener(this);
+    }
 
     private class ConnectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

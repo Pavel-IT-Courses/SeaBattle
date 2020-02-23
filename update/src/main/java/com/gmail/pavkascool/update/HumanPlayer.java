@@ -5,6 +5,13 @@ import com.gmail.pavkascool.update.utils.Coordinates;
 import java.util.List;
 
 public class HumanPlayer implements Player {
+    private String name;
+    private Connector connector;
+
+    public HumanPlayer() {
+        connector = Connector.getInstance();
+    }
+
     @Override
     public Coordinates takeTarget() {
         return null;

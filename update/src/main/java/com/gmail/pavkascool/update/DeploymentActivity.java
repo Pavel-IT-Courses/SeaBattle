@@ -95,6 +95,12 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!isAgainstAI) Connector.getInstance().removeListener(this);
+    }
+
+    @Override
     public void onClick(View v) {
         CellView ship = battlefield.getSelectedShip();
         switch(v.getId()) {
@@ -171,7 +177,11 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                         intent.putExtra(name, loc);
                     }
                     if(!isAgainstAI) {
-                        new Connector(this).sendAndReceive(intent, ships);
+                        //new Connector(this).sendAndReceive(intent, ships);
+                        //new Connector(this).startCommunication(intent, ships);
+                        Connector connector = Connector.getInstance();
+                        connector.setListener(this);
+                        connector.startCommunication(intent, ships);
                     } else {
                         startActivity(intent);
                         finish();
@@ -221,5 +231,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onReceive(Intent intent) {
         startActivity(intent);
+        finish();
     }
 }

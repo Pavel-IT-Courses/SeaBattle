@@ -25,10 +25,27 @@ import static com.gmail.pavkascool.update.BattleActivity.FLEET_SIZE;
 public class Connector {
     private static BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final UUID DEFAULT_UUID = UUID.fromString("48499999-8cf0-11bd-b23e-10b96e4ef00d");
-    private ConnectionListener connectionListener;
+    private CommunicationThread communication;
 
-    public Connector(ConnectionListener connectionListener) {
-        this.connectionListener = connectionListener;
+    private List<ConnectionListener> connectionListeners;
+    private static Connector instance;
+
+    public static Connector getInstance() {
+        if(instance == null) {
+            instance = new Connector();
+        }
+        return instance;
+    }
+
+    private Connector() {
+        connectionListeners = new ArrayList<>();
+    }
+
+    public void setListener(ConnectionListener connectionListener) {
+        connectionListeners.add(connectionListener);
+    }
+    public void removeListener(ConnectionListener connectionListener) {
+        connectionListeners.remove(connectionListener);
     }
 
     public void setConnectionAsServer() {
@@ -41,92 +58,28 @@ public class Connector {
         connecting.start();
     }
 
-    public void sendAndReceive(Intent intent, List<CellView> ships) {
-        BluetoothSocket bluetoothSocket = BattleApplication.getInstance().getBluetoothSocket();
-
-        try(InputStream is = bluetoothSocket.getInputStream(); DataInputStream dis = new DataInputStream(is); OutputStream os = bluetoothSocket.getOutputStream();
-            DataOutputStream dos = new DataOutputStream(os)) {
-            Thread sending = new SendThread(ships, dos);
-            sending.start();
-
-            Thread.currentThread().sleep(500);
-
-            Thread receiving = new ReceiveThread(intent, dis);
-            receiving.start();
-
-            Thread.currentThread().sleep(1000);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+    public void startCommunication(Intent intent, List<CellView> ships) {
+        communication = new CommunicationThread(intent, ships);
+        communication.start();
+    }
+    public void stopCommunication() {
+        communication.interrupt();
     }
 
-    private class ReceiveThread extends Thread {
-        Intent intent;
-        DataInputStream dis;
-        public ReceiveThread(Intent intent, DataInputStream dis) {
+    private class CommunicationThread extends Thread {
+        private Intent intent;
+        private List<CellView> ships;
+        private BluetoothSocket bluetoothSocket;
+
+        public CommunicationThread(Intent intent, List<CellView> ships) {
             this.intent = intent;
-            this.dis = dis;
-        }
-
-        public void run() {
-            int[] enemies = new int[FLEET_SIZE * 4];
-            try {
-                while (dis.available() == 0) {
-                    Thread.currentThread().sleep(500);
-                }
-                int i = 0;
-                while (dis.available() > 0) {
-                    enemies[i++] = dis.readInt();
-                    System.out.println("THE ELEMENT IS " + enemies[i-1]);
-                }
-                System.out.println("ENEMIES: " + enemies);
-            }
-            catch (Exception e) {
-            }
-
-//                for(int i = 0; i < enemies.length; i++) {
-//                    enemies[i] = ds.readInt();
-//                    System.out.println("I = " + i + ", array var = " + enemies[i]);
-//                }
-                intent.putExtra("enemies", enemies);
-                connectionListener.onReceive(intent);
-
-//            try  {
-//                InputStream is = socket.getInputStream();
-//                DataInputStream dis = new DataInputStream(is);
-//                while(dis.available() == 0) {
-//                    Thread.currentThread().sleep(500);
-//                }
-//                while (dis.available() > 0) {
-//                    int res = dis.readInt();
-//
-//                    System.out.println("I Read " + res);
-//                }
-//            }
-//            catch(IOException e) {
-//                System.out.println("Exception!");
-//                e.printStackTrace();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-        }
-    }
-
-    private class SendThread extends Thread {
-        List<CellView> ships;
-        DataOutputStream dos;
-
-        public SendThread(List<CellView> ships, DataOutputStream dos) {
             this.ships = ships;
-            this.dos = dos;
+            bluetoothSocket = BattleApplication.getInstance().getBluetoothSocket();
         }
-
         public void run() {
-            try {
+            try(InputStream is = bluetoothSocket.getInputStream(); DataInputStream dis = new DataInputStream(is); OutputStream os = bluetoothSocket.getOutputStream();
+                DataOutputStream dos = new DataOutputStream(os)) {
+
                 for (CellView ship : ships) {
                     System.out.println("Sending ship " + ship + " totally: " + ships.size());
                     dos.writeInt(ship.getLocationCol());
@@ -135,13 +88,35 @@ public class Connector {
                     dos.writeInt(ship.getRows());
                 }
                 dos.flush();
-            } catch (IOException e) {
+
+                int[] enemies = new int[FLEET_SIZE * 4];
+
+                while (dis.available() == 0) {
+                    Thread.currentThread().sleep(1000);
+
+                }
+                int i = 0;
+                while (dis.available() > 0) {
+                    enemies[i++] = dis.readInt();
+                    System.out.println("THE ELEMENT IS " + enemies[i-1]);
+                }
+
+                intent.putExtra("enemies", enemies);
+                //connectionListener.onReceive(intent);
+                for(ConnectionListener cl: connectionListeners) {
+                    cl.onReceive(intent);
+                }
+
+                while(!isInterrupted()) {
+
+                }
 
             }
-            System.out.println("Socket is Connected = " + BattleApplication.getInstance().getBluetoothSocket().isConnected());
+            catch(IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
-
 
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket serverSocket;
@@ -170,7 +145,10 @@ public class Connector {
                     if(socket != null) {
                         BattleApplication.getInstance().setBluetoothSocket(socket);
                         serverSocket.close();
-                        connectionListener.onSocketConnected();
+                        //connectionListener.onSocketConnected();
+                        for(ConnectionListener cl: connectionListeners) {
+                            cl.onSocketConnected();
+                        }
                         break;
                     }
                 }
@@ -228,7 +206,10 @@ public class Connector {
 
             if(socket.isConnected()) {
                 BattleApplication.getInstance().setBluetoothSocket(socket);
-                connectionListener.onSocketConnected();
+                //connectionListener.onSocketConnected();
+                for(ConnectionListener cl: connectionListeners) {
+                    cl.onSocketConnected();
+                }
             }
         }
 

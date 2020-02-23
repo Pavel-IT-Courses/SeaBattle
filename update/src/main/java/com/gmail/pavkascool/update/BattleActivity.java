@@ -131,10 +131,11 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     protected void onResume() {
         super.onResume();
         System.out.println("My Fleet is " + config.getFleet() + ", Ememy's Fleet is " + config.getEnemyFleet());
-        if(!config.isYourTurn()) {
-            turn.setText(ENEMYS);
-            sufferAttacks();
-        }
+        System.out.println("SOCKET CONNECTED " + BattleApplication.getInstance().getBluetoothSocket().isConnected());
+//        if(!config.isYourTurn()) {
+//            turn.setText(ENEMYS);
+//            sufferAttacks();
+//        }
     }
 
     @Override
@@ -151,6 +152,12 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     private List<CellView> getEnemyLocations() {
         if (isAgainstAI) return getLocationsFromAI();
         else return getLocationsByBlueTooth();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(!isAgainstAI) Connector.getInstance().stopCommunication();
     }
 
     private List<CellView> getLocationsByBlueTooth() {
@@ -267,6 +274,12 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                 t.start();
 
                                 //return;
+                                try {
+                                    Thread.currentThread().sleep(500);
+                                    if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 finish();
                             }
                             return;
@@ -351,6 +364,12 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                     });
 
                                     //return;
+                                    try {
+                                        Thread.currentThread().sleep(500);
+                                        if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                     finish();
                                 }
                             }
