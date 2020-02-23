@@ -177,8 +177,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                         intent.putExtra(name, loc);
                     }
                     if(!isAgainstAI) {
-                        //new Connector(this).sendAndReceive(intent, ships);
-                        //new Connector(this).startCommunication(intent, ships);
+
                         Connector connector = Connector.getInstance();
                         connector.setListener(this);
                         connector.startCommunication(intent, ships);

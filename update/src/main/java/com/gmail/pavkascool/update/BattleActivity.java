@@ -77,7 +77,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
         config = (Configuration) getLastCustomNonConfigurationInstance();
         if (config == null) {
-            config = new Configuration();
+            config = new Configuration(determineTurn());
             Intent intent = getIntent();
             for (int i = 0; i < FLEET_SIZE; i++) {
                 CellView ship = new CellView(this, null);
@@ -151,6 +151,20 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     private List<CellView> getEnemyLocations() {
         if (isAgainstAI) return getLocationsFromAI();
         else return getLocationsByBlueTooth();
+    }
+
+    private boolean determineTurn() {
+
+        if(isAgainstAI) {
+            Random random = new Random();
+            return random.nextBoolean();
+        }
+        else {
+            Intent intent = getIntent();
+            int[] enemies = intent.getIntArrayExtra("enemies");
+            if(enemies[FLEET_SIZE * 4] == 1) return true;
+            else return false;
+        }
     }
 
     @Override

@@ -33,7 +33,7 @@ public class Configuration {
 
     private boolean isOver, yourVictory;
 
-    public Configuration() {
+    public Configuration(boolean yourTurn) {
         ships = new ArrayList<CellView>();
         hits = new ArrayList<Coordinates>();
         shots = new ArrayList<Coordinates>();
@@ -44,8 +44,9 @@ public class Configuration {
         enemyNeighbours = new HashSet<Coordinates>();
         fleet = 0;
         enemyFleet = 10;
-        Random random = new Random();
-        isYourTurn = random.nextBoolean();
+        isYourTurn = yourTurn;
+//        Random random = new Random();
+//        isYourTurn = random.nextBoolean();
         if(isYourTurn) {
             turn = 1;
         }

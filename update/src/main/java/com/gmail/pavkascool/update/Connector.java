@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static com.gmail.pavkascool.update.BattleActivity.FLEET_SIZE;
@@ -87,9 +88,22 @@ public class Connector {
                     dos.writeInt(ship.getCols());
                     dos.writeInt(ship.getRows());
                 }
+
+                Random random = new Random();
+                boolean yourTurn = random.nextBoolean();
+                if(yourTurn) {
+                    dos.writeInt(-1);
+                }
+                else {
+                    dos.writeInt(1);
+                }
+
                 dos.flush();
 
-                int[] enemies = new int[FLEET_SIZE * 4];
+                int[] enemies = new int[FLEET_SIZE * 4 + 1];
+
+                boolean determine = false;
+                if(dis.available() == 0) determine = true;
 
                 while (dis.available() == 0) {
                     Thread.currentThread().sleep(1000);
@@ -99,6 +113,15 @@ public class Connector {
                 while (dis.available() > 0) {
                     enemies[i++] = dis.readInt();
                     System.out.println("THE ELEMENT IS " + enemies[i-1]);
+                }
+
+                if(determine) {
+                    if(yourTurn) {
+                        enemies[FLEET_SIZE * 4] = 1;
+                    }
+                    else {
+                        enemies[FLEET_SIZE * 4] = -1;
+                    }
                 }
 
                 intent.putExtra("enemies", enemies);
