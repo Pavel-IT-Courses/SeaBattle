@@ -130,8 +130,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("My Fleet is " + config.getFleet() + ", Ememy's Fleet is " + config.getEnemyFleet());
-        System.out.println("SOCKET CONNECTED " + BattleApplication.getInstance().getBluetoothSocket().isConnected());
+
 //        if(!config.isYourTurn()) {
 //            turn.setText(ENEMYS);
 //            sufferAttacks();
