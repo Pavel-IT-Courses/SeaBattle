@@ -185,6 +185,7 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                         startActivity(intent);
                         finish();
                     }
+
                 }
         }
 
