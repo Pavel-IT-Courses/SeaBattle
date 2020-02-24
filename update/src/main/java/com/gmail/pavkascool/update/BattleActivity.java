@@ -258,6 +258,10 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             if (config.getEnemyShots().contains(coordinates) || config.getEnemyHits().contains(coordinates)) {
                 Toast.makeText(this, "Already checked. Fire again", Toast.LENGTH_SHORT).show();
             } else {
+
+                if(!isAgainstAI) {
+
+                }
                 for (int i = 0; i < black.getChildCount(); i++) {
                     CellView enemy = (CellView) (black.getChildAt(i));
                     for (Coordinates crd : enemy.getCoordinates()) {
@@ -282,6 +286,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                     public void run() {
                                         db.resultDao().insert(result);
                                         BattleApplication.getInstance().getStartModel().updateResults();
+                                        //if(!isAgainstAI) Connector.getInstance().stopCommunication();
                                     }
                                 });
                                 t.start();
@@ -367,6 +372,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                     Result result = getResult(false);
                                     db.resultDao().insert(result);
                                     BattleApplication.getInstance().getStartModel().updateResults();
+                                    //if(!isAgainstAI) Connector.getInstance().stopCommunication();
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

@@ -31,6 +31,8 @@ public class Connector {
     private List<ConnectionListener> connectionListeners;
     private static Connector instance;
 
+    private Coordinates yourShell, enemyShell;
+
     public static Connector getInstance() {
         if(instance == null) {
             instance = new Connector();
@@ -40,6 +42,19 @@ public class Connector {
 
     private Connector() {
         connectionListeners = new ArrayList<>();
+    }
+
+    public void bombarding(Coordinates coordinates) {
+        yourShell = coordinates;
+    }
+
+    public Coordinates shelled() {
+        if(enemyShell != null) {
+            Coordinates shell = new Coordinates(enemyShell.getRow(), enemyShell.getCol());
+            enemyShell = null;
+            return shell;
+        }
+        else return null;
     }
 
     public void setListener(ConnectionListener connectionListener) {
@@ -131,13 +146,28 @@ public class Connector {
                 }
 
                 while(!isInterrupted()) {
-
+                    fight(dos, dis);
                 }
 
             }
             catch(IOException | InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void fight(DataOutputStream dos, DataInputStream dis) throws IOException {
+        if(yourShell != null) {
+            dos.writeInt(yourShell.getRow());
+            dos.writeInt(yourShell.getCol());
+            yourShell = null;
+
+        }
+
+        if(dis.available() > 0) {
+            int r = dis.readInt();
+            int c = dis.readInt();
+            enemyShell = new Coordinates(r,c);
         }
     }
 

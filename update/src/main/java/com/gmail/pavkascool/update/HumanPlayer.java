@@ -29,6 +29,6 @@ public class HumanPlayer implements Player {
 
     @Override
     public String getName() {
-        return null;
+        return "Human";
     }
 }
