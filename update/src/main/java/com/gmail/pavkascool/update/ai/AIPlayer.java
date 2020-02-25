@@ -1,7 +1,13 @@
 package com.gmail.pavkascool.update.ai;
 
+import android.widget.Toast;
+import com.gmail.pavkascool.update.BattleActivity;
+import com.gmail.pavkascool.update.BattleApplication;
+import com.gmail.pavkascool.update.Connector;
 import com.gmail.pavkascool.update.Player;
+import com.gmail.pavkascool.update.database.Result;
 import com.gmail.pavkascool.update.utils.Coordinates;
+import com.gmail.pavkascool.update.views.CellView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static com.gmail.pavkascool.update.BattleActivity.*;
 
@@ -71,6 +78,17 @@ public class AIPlayer implements Player {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void getBomb(Coordinates bomb) {
+
+    }
+
+    @Override
+    public Coordinates sendBomb() {
+
+        return null;
     }
 
     private void shipIsDrowned(Coordinates coordinates) {

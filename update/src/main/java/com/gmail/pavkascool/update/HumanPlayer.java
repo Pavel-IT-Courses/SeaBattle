@@ -14,6 +14,7 @@ public class HumanPlayer implements Player {
 
     @Override
     public Coordinates takeTarget() {
+
         return null;
     }
 
@@ -30,5 +31,10 @@ public class HumanPlayer implements Player {
     @Override
     public String getName() {
         return "Human";
+    }
+
+    @Override
+    public void getBomb(Coordinates bomb) {
+        connector.bombarding(bomb);
     }
 }

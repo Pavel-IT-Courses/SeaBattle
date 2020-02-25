@@ -10,4 +10,6 @@ public interface Player {
     void getReport(Coordinates coordinates, int result);
     List<Coordinates> getShots();
     String getName();
+    void getBomb(Coordinates bomb);
+    Coordinates sendBomb();
 }

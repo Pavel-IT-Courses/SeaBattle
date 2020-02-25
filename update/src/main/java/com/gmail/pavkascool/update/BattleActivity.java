@@ -259,9 +259,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                 Toast.makeText(this, "Already checked. Fire again", Toast.LENGTH_SHORT).show();
             } else {
 
-                if(!isAgainstAI) {
-
-                }
+                player.getBomb(coordinates);
                 for (int i = 0; i < black.getChildCount(); i++) {
                     CellView enemy = (CellView) (black.getChildAt(i));
                     for (Coordinates crd : enemy.getCoordinates()) {
@@ -314,13 +312,126 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     }
 
     private void sufferAttacks() {
+//        if(!isAgainstAI) {
+//            Coordinates c = Connector.getInstance().shelled();
+//            while(c == null) {
+//                try {
+//                    TimeUnit.MILLISECONDS.sleep(750);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                c = Connector.getInstance().shelled();
+//            }
+//            System.out.println("REMOTE ENEMY SHELLED TO " + c.getRow() + " " + c.getCol());
+//        }
+        //else new Thread(runnable).start();
 
-        new Thread(runnable).start();
+        outer: while(!config.isYourTurn()) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            final Coordinates coordinates = player.takeTarget();
+            System.out.println("ENEMY FIRES: " + coordinates.getCol() + " " + coordinates.getRow());
+            for(int i = 0; i < white.getChildCount(); i++) {
+                final CellView ship = (CellView)(white.getChildAt(i));
+                for(final Coordinates crd: ship.getCoordinates()) {
+                    if(coordinates.equals(crd)) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ship.damage(crd);
+                                System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
+                            }
+                        });
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(900);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("Repeating...HIT! DECKS LEFT: " + ship.getDecks());
+                        BattleActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                config.addHit(coordinates);
+                            }
+                        });
+
+                        if(ship.isDrowned()) {
+                            player.getReport(coordinates, RESULT_DROWN);
+                            System.out.println("ENEMY DRAWNED MY SHIP");
+                            for(final Coordinates cc: ship.getCoordinates()) {
+
+                                BattleActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        config.addNeighbours(cc.getZone());
+                                    }
+                                });
+
+                            }
+                            config.sink();
+                            System.out.println("My Fleet Size = " + config.getFleet());
+                            if(config.getFleet() == 0) {
+                                Result result = getResult(false);
+                                db.resultDao().insert(result);
+                                BattleApplication.getInstance().getStartModel().updateResults();
+                                //if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(BattleActivity.this, "YOU HAVE LOST!", Toast.LENGTH_LONG).show();
+                                        turn.setText(YOUR_DEFEAT);
+
+                                    }
+                                });
+
+                                //return;
+                                try {
+                                    Thread.currentThread().sleep(500);
+                                    if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                finish();
+                            }
+                        }
+                        else {
+                            player.getReport(coordinates, RESULT_DAMAGE);
+                        }
+                        continue outer;
+                    }
+                }
+            }
+            player.getReport(coordinates, RESULT_MISS);
+            BattleActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    config.addShot(coordinates);
+                    config.incrementTurn();
+                }
+            });
+            try {
+                TimeUnit.MILLISECONDS.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Coordinates " + coordinates.getCol() + " " + coordinates.getRow() + " added to SHOTS = " + player.getShots().contains(coordinates));
+            config.setYourTurn(true);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    turn.setText(YOURS + config.getTurnNumber());
+                }
+            });
+        }
     }
 
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
+
             outer: while(!config.isYourTurn()) {
                 try {
                     TimeUnit.MILLISECONDS.sleep(750);
