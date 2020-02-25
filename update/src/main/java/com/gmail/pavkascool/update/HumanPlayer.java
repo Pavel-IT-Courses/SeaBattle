@@ -37,4 +37,9 @@ public class HumanPlayer implements Player {
     public void getBomb(Coordinates bomb) {
         connector.bombarding(bomb);
     }
+
+    @Override
+    public Coordinates sendBomb() {
+        return connector.shelled();
+    }
 }

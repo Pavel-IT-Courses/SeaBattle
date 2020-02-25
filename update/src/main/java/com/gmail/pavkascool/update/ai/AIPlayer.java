@@ -87,8 +87,20 @@ public class AIPlayer implements Player {
 
     @Override
     public Coordinates sendBomb() {
+        Coordinates coordinates = takeTarget();
+        return coordinates;
+    }
 
-        return null;
+    private class BombingThread extends Thread {
+        private Coordinates bomb;
+
+        public BombingThread(Coordinates bomb) {
+            this.bomb = bomb;
+        }
+
+        public void run() {
+
+        }
     }
 
     private void shipIsDrowned(Coordinates coordinates) {
