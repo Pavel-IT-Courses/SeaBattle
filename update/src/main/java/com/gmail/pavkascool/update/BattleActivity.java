@@ -257,13 +257,13 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             if (config.getEnemyShots().contains(coordinates) || config.getEnemyHits().contains(coordinates)) {
                 Toast.makeText(this, "Already checked. Fire again", Toast.LENGTH_SHORT).show();
             } else {
-
                 player.getBomb(coordinates);
                 for (int i = 0; i < black.getChildCount(); i++) {
                     CellView enemy = (CellView) (black.getChildAt(i));
                     for (Coordinates crd : enemy.getCoordinates()) {
                         if (crd.equals(coordinates)) {
                             enemy.damage();
+                            System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + "DECKS LEFT: " + enemy.getDecks());
                             config.addEnemyHit(crd);
                             if (enemy.isDrowned()) {
                                 Toast.makeText(this, "DROWNED!", Toast.LENGTH_SHORT).show();
