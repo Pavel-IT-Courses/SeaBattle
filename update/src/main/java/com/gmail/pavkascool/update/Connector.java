@@ -97,7 +97,6 @@ public class Connector {
                 DataOutputStream dos = new DataOutputStream(os)) {
 
                 for (CellView ship : ships) {
-                    System.out.println("Sending ship " + ship + " totally: " + ships.size());
                     dos.writeInt(ship.getLocationCol());
                     dos.writeInt(ship.getLocationRow());
                     dos.writeInt(ship.getCols());
@@ -127,7 +126,6 @@ public class Connector {
                 int i = 0;
                 while (dis.available() > 0) {
                     enemies[i++] = dis.readInt();
-                    System.out.println("THE ELEMENT IS " + enemies[i-1]);
                 }
 
                 if(determine) {
@@ -140,7 +138,7 @@ public class Connector {
                 }
 
                 intent.putExtra("enemies", enemies);
-                //connectionListener.onReceive(intent);
+
                 for(ConnectionListener cl: connectionListeners) {
                     cl.onReceive(intent);
                 }
@@ -158,6 +156,7 @@ public class Connector {
 
     private void fight(DataOutputStream dos, DataInputStream dis) throws IOException {
         if(yourShell != null) {
+            System.out.println("CONNECTOR FIGHTS " + yourShell.getRow() + "  " + yourShell.getCol());
             dos.writeInt(yourShell.getRow());
             dos.writeInt(yourShell.getCol());
             yourShell = null;
@@ -168,6 +167,7 @@ public class Connector {
             int r = dis.readInt();
             int c = dis.readInt();
             enemyShell = new Coordinates(r,c);
+            System.out.println("CONNECTOR GET FIRED " + r + "  " + c);
         }
     }
 
