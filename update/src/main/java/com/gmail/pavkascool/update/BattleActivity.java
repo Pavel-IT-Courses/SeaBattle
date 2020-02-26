@@ -184,8 +184,12 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             CellView enemy = new CellView(this, null);
             enemy.setLocationCol(enemies[index++]);
             enemy.setLocationRow(enemies[index++]);
-            enemy.setCols(enemies[index++]);
-            enemy.setRows(enemies[index++]);
+            int c = enemies[index++];
+            enemy.setCols(c);
+            int r = enemies[index++];
+            enemy.setRows(r);
+            int l = Math.max(c, r);
+            enemy.setDecks(l);
             enemyShips.add(enemy);
             black.addView(enemy);
         }
