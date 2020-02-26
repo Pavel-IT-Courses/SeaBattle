@@ -262,8 +262,9 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                     CellView enemy = (CellView) (black.getChildAt(i));
                     for (Coordinates crd : enemy.getCoordinates()) {
                         if (crd.equals(coordinates)) {
+                            System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + " DECKS LEFT: " + enemy.getDecks());
                             enemy.damage();
-                            System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + "DECKS LEFT: " + enemy.getDecks());
+                            System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + " DECKS LEFT: " + enemy.getDecks());
                             config.addEnemyHit(crd);
                             if (enemy.isDrowned()) {
                                 Toast.makeText(this, "DROWNED!", Toast.LENGTH_SHORT).show();
