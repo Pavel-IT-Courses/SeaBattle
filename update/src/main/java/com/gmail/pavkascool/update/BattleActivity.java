@@ -260,6 +260,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                 player.getBomb(coordinates);
                 for (int i = 0; i < black.getChildCount(); i++) {
                     CellView enemy = (CellView) (black.getChildAt(i));
+                    System.out.println("LISTING ENEMIES, DECKS = " + enemy.getDecks() + " i = " + i);
                     for (Coordinates crd : enemy.getCoordinates()) {
                         if (crd.equals(coordinates)) {
                             System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + " DECKS LEFT: " + enemy.getDecks());
