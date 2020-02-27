@@ -323,11 +323,11 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             public void run() {
 
                 outer:while(!config.isYourTurn()) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        Thread.sleep(500);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     final Coordinates coordinates = player.sendBomb();
                     if (coordinates != null) {
                         for(int i = 0; i < white.getChildCount(); i++) {
@@ -338,15 +338,17 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                         @Override
                                         public void run() {
                                             ship.damage(crd);
+                                            // new
+                                            //config.addHit(coordinates);
                                         }
                                     });
                                     try {
-                                        TimeUnit.MILLISECONDS.sleep(900);
+                                        TimeUnit.MILLISECONDS.sleep(300);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
                                     System.out.println("Repeating...HIT! DECKS LEFT: " + ship.getDecks());
-                                    BattleActivity.this.runOnUiThread(new Runnable() {
+                                    runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             config.addHit(coordinates);

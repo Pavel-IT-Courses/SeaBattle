@@ -45,8 +45,7 @@ public class Configuration {
         fleet = 0;
         enemyFleet = 10;
         isYourTurn = yourTurn;
-//        Random random = new Random();
-//        isYourTurn = random.nextBoolean();
+
         if(isYourTurn) {
             turn = 1;
         }
