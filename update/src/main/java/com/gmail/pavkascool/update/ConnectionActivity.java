@@ -2,14 +2,8 @@ package com.gmail.pavkascool.update;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.gmail.pavkascool.update.delegates.ConnectionModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +58,6 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.server) {
-            //model.connectOpponent(null);
-            //new Connector(this).setConnectionAsServer();
             Connector connector = Connector.getInstance();
             connector.setListener(this);
             connector.setConnectionAsServer();
@@ -75,8 +65,6 @@ public class ConnectionActivity extends AppCompatActivity implements View.OnClic
         }
         else {
             String dev = ((TextView)v).getText().toString();
-            //model.connectOpponent(dev);
-            //new Connector(this).setConnectionAsClient(dev);
             Connector connector = Connector.getInstance();
             connector.setListener(this);
             connector.setConnectionAsClient(dev);

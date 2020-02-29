@@ -31,23 +31,12 @@ public class Result {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getWinner() {
         return winner;
-    }
-
-    public void setWinner(String winner) {
-        this.winner = winner;
     }
 
     public String getTurns() {
         return turns;
     }
 
-    public void setTurns(String turns) {
-        this.turns = turns;
-    }
 }

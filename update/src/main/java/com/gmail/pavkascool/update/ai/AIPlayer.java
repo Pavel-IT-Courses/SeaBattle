@@ -35,15 +35,10 @@ public class AIPlayer implements Player {
     private Map<Integer, Integer> enemyShipMap;
     private int minLength;
 
-    private boolean isTurn;
     private int shotNo;
 
     private Random random = new Random();
 
-//    public static AIPlayer getInstance() {
-//        if(instance == null) instance = new AIPlayer();
-//        return instance;
-//    }
     @Override
     public List<Coordinates> getShots() {
         return shots;
@@ -96,17 +91,6 @@ public class AIPlayer implements Player {
         return coordinates;
     }
 
-    private class BombingThread extends Thread {
-        private Coordinates bomb;
-
-        public BombingThread(Coordinates bomb) {
-            this.bomb = bomb;
-        }
-
-        public void run() {
-
-        }
-    }
 
     private void shipIsDrowned(Coordinates coordinates) {
         hits.add(coordinates);
@@ -127,7 +111,7 @@ public class AIPlayer implements Player {
             int c = random.nextInt(columns);
             shot = new Coordinates(r, c);
         }
-        while(cellIsChecked(shot));
+        while(cellIsChecked(shot) || !canBeTargeted(shot));
         return shot;
     }
 
@@ -203,22 +187,18 @@ public class AIPlayer implements Player {
             Coordinates coordinates = damagedEnemy.get(0);
 
             if(measureHorizontalSpace(coordinates, true) < Math.max(2, minLength)) {
-                System.out.println("WE HAVE TO SHOT VERTICALLY");
                 return shotVertical(coordinates);
             }
 
             if(measureVerticalSpace(coordinates, true) < Math.max(2, minLength)) {
-                System.out.println("WE HAVE TO SHOT HORIZONTALLY");
                 return shotHorizontal(coordinates);
             }
 
             boolean vertical = random.nextBoolean();
             if(vertical) {
-                System.out.println("Random vertical shot");
                 return shotVertical(coordinates);
             }
             else {
-                System.out.println("Random Horizontal shot");
                 return shotHorizontal(coordinates);
             }
         }
@@ -271,20 +251,15 @@ public class AIPlayer implements Player {
         int horizontalSpace = 1;
         int maxCol = columns - 1;
         Coordinates next = coordinates.nextHorizontal(maxCol);
-        System.out.println("NEXT COORDINATES ARE " + next);
         while (next != null && !cellIsChecked(next)) {
-            System.out.println("NEXT = " + next + " and IsChecked = " + cellIsChecked(next));
             horizontalSpace++;
             next = next.nextHorizontal(maxCol);
         }
         Coordinates prev = coordinates.prevHorizontal(0);
-        System.out.println("PREV COORDINATES ARE " + prev);
         while (prev != null && !cellIsChecked(prev)) {
-            System.out.println("PREV = " + prev + " and IsChecked = " + cellIsChecked(prev));
             horizontalSpace++;
             prev = prev.prevHorizontal(0);
         }
-        System.out.println("Horizontal Space Left is " + horizontalSpace);
         return horizontalSpace;
     }
 
@@ -312,20 +287,15 @@ public class AIPlayer implements Player {
 
         int maxRow = rows - 1;
         Coordinates next = coordinates.nextVertical(maxRow);
-        System.out.println("NEXT COORDINATES ARE " + next);
         while (next != null && !cellIsChecked(next)) {
-            System.out.println("NEXT = " + next + " and IsChecked = " + cellIsChecked(next));
             verticalSpace++;
             next = next.nextVertical(maxRow);
         }
         Coordinates prev = coordinates.prevVertical(0);
-        System.out.println("PREV COORDINATES ARE " + prev);
         while (prev != null && !cellIsChecked(prev)) {
-            System.out.println("PREV = " + prev + " and IsChecked = " + cellIsChecked(prev));
             verticalSpace++;
             prev = prev.prevVertical(0);
         }
-        System.out.println("Vertical Space Left is " + verticalSpace);
         return verticalSpace;
     }
 
@@ -350,16 +320,4 @@ public class AIPlayer implements Player {
         minLength = 1;
     }
 
-    private void sink(int decks) {
-        int num = enemyShipMap.get(decks);
-        if(num == 1) {
-            enemyShipMap.remove(decks);
-            if(decks == minLength) {
-                minLength = Collections.min(enemyShipMap.keySet());
-            }
-        }
-        else {
-            enemyShipMap.put(decks, --num);
-        }
-    }
 }

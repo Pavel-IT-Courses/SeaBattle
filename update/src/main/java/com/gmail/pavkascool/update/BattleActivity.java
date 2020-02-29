@@ -268,12 +268,9 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                 player.getBomb(coordinates);
                 for (int i = 0; i < black.getChildCount(); i++) {
                     CellView enemy = (CellView) (black.getChildAt(i));
-                    System.out.println("LISTING ENEMIES, DECKS = " + enemy.getDecks() + " i = " + i);
                     for (Coordinates crd : enemy.getCoordinates()) {
                         if (crd.equals(coordinates)) {
-                            System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + " DECKS LEFT: " + enemy.getDecks());
-                            enemy.damage();
-                            System.out.println("HIT ON " + crd.getRow() + " " + crd.getCol() + " DECKS LEFT: " + enemy.getDecks());
+                            enemy.damage();;
                             config.addEnemyHit(crd);
                             if (enemy.isDrowned()) {
                                 Toast.makeText(this, "DROWNED!", Toast.LENGTH_SHORT).show();
@@ -349,11 +346,9 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
-                                    System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
 
                                     if(ship.isDrowned()) {
                                         player.getReport(coordinates, RESULT_DROWN);
-                                        System.out.println("ENEMY DROWNED MY SHIP");
                                         for(final Coordinates cc: ship.getCoordinates()) {
 
                                             BattleActivity.this.runOnUiThread(new Runnable() {
@@ -380,7 +375,6 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
                                             try {
                                                 Thread.sleep(500);
-                                                //if(!isAgainstAI) Connector.getInstance().stopCommunication();
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
@@ -417,7 +411,6 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         };
         defend = new Thread(defending);
         defend.start();
-        System.out.println("INSDIE BATTLE THREAD STATED = " + defend.getName());
     }
 
 

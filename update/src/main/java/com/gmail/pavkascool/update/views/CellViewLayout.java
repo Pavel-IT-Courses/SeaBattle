@@ -89,47 +89,20 @@ public class CellViewLayout extends ViewGroup implements View.OnTouchListener, V
         this.hits = hits;
     }
 
-    public boolean isDragAllowed() {
-        return dragAllowed;
-    }
-
-    public void setDragAllowed(boolean dragAllowed) {
-        this.dragAllowed = dragAllowed;
-    }
-
     public CellView getSelectedShip() {
         return selectedShip;
     }
 
-    public void setSelectedShip(CellView selectedShip) {
-        this.selectedShip = selectedShip;
-    }
-
-    public int getCellSize() {
-        return cellSize;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
 
     @Override
     public int getId() {
         return super.getId();
     }
 
-
     public int getCols() {
         return cols;
     }
 
-    public void setCols(int cols) {
-        this.cols = cols;
-    }
 
     @Override
     protected void onDraw(Canvas canvas) {

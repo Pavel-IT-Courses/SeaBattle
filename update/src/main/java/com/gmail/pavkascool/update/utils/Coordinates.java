@@ -14,9 +14,6 @@ public class Coordinates {
         coords[1] = c;
     }
 
-    public int[] getCoords() {
-        return coords;
-    }
     public int getRow() {
         return coords[0];
     }
@@ -55,7 +52,7 @@ public class Coordinates {
     @NonNull
     @Override
     public String toString() {
-        return " " + getCol() + " " + getRow();
+        return " " + getRow() + " " + getCol();
     }
 
     public Coordinates nextHorizontal() {

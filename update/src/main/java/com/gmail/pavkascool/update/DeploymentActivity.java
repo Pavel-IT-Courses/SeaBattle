@@ -29,8 +29,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
     private CellView ship1_1, ship1_2, ship1_3, ship1_4;
 
     private List<CellView> ships = new ArrayList<CellView>();
-    private Set<Coordinates> prohibited;
-
     private Button rotate;
     private Button fight;
     private Button auto;
@@ -164,8 +162,6 @@ public class DeploymentActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, "Your Ships are not completely deployed yet! Complete Deployment!", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, BattleActivity.class);
-                    //intent.putExtra("againstAI", isAgainstAI);
-
                     for(int i = 0; i < ships.size(); i++) {
                         CellView shp = ships.get(i);
                         String name = "shp" + i;

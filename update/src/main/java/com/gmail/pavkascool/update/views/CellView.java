@@ -88,18 +88,6 @@ public class CellView extends View implements View.OnTouchListener {
         return isDrowned;
     }
 
-    public void setDrowned(boolean drowned) {
-        isDrowned = drowned;
-    }
-
-    public float getTouchX() {
-        return touchX;
-    }
-
-    public float getTouchY() {
-        return touchY;
-    }
-
     private Paint paint;
 
     public void setLocationRow(int locationRow) {
@@ -119,14 +107,6 @@ public class CellView extends View implements View.OnTouchListener {
     }
 
     public int getLength() { return cols + rows - 1; }
-
-    public int getCellSize() {
-        return cellSize;
-    }
-
-    public void setCellSize(int cellSize) {
-        this.cellSize = cellSize;
-    }
 
     public int getRows() {
         return rows;
@@ -163,7 +143,6 @@ public class CellView extends View implements View.OnTouchListener {
 
         paint.setColor(Color.RED);
         for(int[] ar: damages) {
-            System.out.println("SO MANY DAMAGES... " + damages.size());
             canvas.drawRect(cellSize * ar[0], cellSize * ar[1], cellSize * (ar[0] + 1), cellSize * (ar[1] + 1), paint);
         }
 

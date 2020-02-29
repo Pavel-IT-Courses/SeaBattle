@@ -8,13 +8,10 @@ import android.content.Intent;
 
 import com.gmail.pavkascool.update.utils.Coordinates;
 import com.gmail.pavkascool.update.views.CellView;
-
-import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +47,6 @@ public class Connector {
 
     public Coordinates shelled() {
         if(enemyShell != null) {
-            System.out.println("ENEMY SHELL = " + enemyShell + " Thread: " + Thread.currentThread().getName());
             Coordinates shell = new Coordinates(enemyShell.getRow(), enemyShell.getCol());
             enemyShell = null;
             return shell;
@@ -143,7 +139,6 @@ public class Connector {
                 for(ConnectionListener cl: connectionListeners) {
                     cl.onReceive(intent);
                 }
-                System.out.println("FIGHTING BEGAN IN THREAD " + Thread.currentThread().getName());
 
                 while(!isInterrupted()) {
                     fight(dos, dis);
@@ -158,7 +153,6 @@ public class Connector {
 
     private void fight(DataOutputStream dos, DataInputStream dis) throws IOException {
         if(yourShell != null) {
-            System.out.println("CONNECTOR FIGHTS " + yourShell.getRow() + "  " + yourShell.getCol());
             dos.writeInt(yourShell.getRow());
             dos.writeInt(yourShell.getCol());
             yourShell = null;
@@ -169,7 +163,6 @@ public class Connector {
             int r = dis.readInt();
             int c = dis.readInt();
             enemyShell = new Coordinates(r,c);
-            System.out.println("CONNECTOR GET FIRED " + r + "  " + c);
         }
     }
 
@@ -186,21 +179,16 @@ public class Connector {
 
             }
             serverSocket = tmp;
-            System.out.println("Server Socket is " + serverSocket);
         }
 
         public void run() {
-            System.out.println("INSIDE RUN");
             BluetoothSocket socket = null;
             while(true) {
                 try {
-                    System.out.println("1st accepting socket is " + socket);
                     socket = serverSocket.accept();
-                    System.out.println("2nd accepting socket is " + socket);
                     if(socket != null) {
                         BattleApplication.getInstance().setBluetoothSocket(socket);
                         serverSocket.close();
-                        //connectionListener.onSocketConnected();
                         for(ConnectionListener cl: connectionListeners) {
                             cl.onSocketConnected();
                         }
@@ -261,7 +249,6 @@ public class Connector {
 
             if(socket.isConnected()) {
                 BattleApplication.getInstance().setBluetoothSocket(socket);
-                //connectionListener.onSocketConnected();
                 for(ConnectionListener cl: connectionListeners) {
                     cl.onSocketConnected();
                 }
