@@ -87,12 +87,12 @@ public class AIPlayer implements Player {
 
     @Override
     public Coordinates sendBomb() {
-        Coordinates coordinates = takeTarget();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Coordinates coordinates = takeTarget();
         return coordinates;
     }
 

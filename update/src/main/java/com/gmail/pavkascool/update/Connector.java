@@ -50,6 +50,7 @@ public class Connector {
 
     public Coordinates shelled() {
         if(enemyShell != null) {
+            System.out.println("ENEMY SHELL = " + enemyShell + " Thread: " + Thread.currentThread().getName());
             Coordinates shell = new Coordinates(enemyShell.getRow(), enemyShell.getCol());
             enemyShell = null;
             return shell;
@@ -142,6 +143,7 @@ public class Connector {
                 for(ConnectionListener cl: connectionListeners) {
                     cl.onReceive(intent);
                 }
+                System.out.println("FIGHTING BEGAN IN THREAD " + Thread.currentThread().getName());
 
                 while(!isInterrupted()) {
                     fight(dos, dis);

@@ -46,6 +46,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
     private Configuration config;
 
     private boolean isAgainstAI;
+    private Thread defend;
 
     private int turnNo;
     private int shotNo;
@@ -167,10 +168,13 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
         }
     }
 
+
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void onDestroy() {
+        super.onDestroy();
         if(!isAgainstAI) Connector.getInstance().stopCommunication();
+        config = null;
+        if (defend != null) defend.interrupt();
     }
 
     private List<CellView> getLocationsByBlueTooth() {
@@ -255,7 +259,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
     @Override
     public void onFire(int c, int r) {
-        if (config.isYourTurn()) {
+        if (config != null && config.isYourTurn()) {
             config.incrementShot();
             Coordinates coordinates = new Coordinates(r, c);
             if (config.getEnemyShots().contains(coordinates) || config.getEnemyHits().contains(coordinates)) {
@@ -296,11 +300,14 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
                                 try {
                                     Thread.currentThread().sleep(500);
-                                    if(!isAgainstAI) Connector.getInstance().stopCommunication();
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                finish();
+                                finally {
+                                    config = null;
+                                    if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                    finish();
+                                }
                             }
                             return;
                         }
@@ -322,24 +329,19 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
             @Override
             public void run() {
 
-                outer:while(!config.isYourTurn()) {
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
+                outer:while(config != null && !config.isYourTurn()) {
+
                     final Coordinates coordinates = player.sendBomb();
                     if (coordinates != null) {
                         for(int i = 0; i < white.getChildCount(); i++) {
                             final CellView ship = (CellView)(white.getChildAt(i));
                             for(final Coordinates crd: ship.getCoordinates()) {
                                 if(coordinates.equals(crd)) {
-                                    runOnUiThread(new Runnable() {
+                                    BattleActivity.this.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             ship.damage(crd);
-                                            // new
-                                            //config.addHit(coordinates);
+                                            config.addHit(coordinates);
                                         }
                                     });
                                     try {
@@ -347,13 +349,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
-                                    System.out.println("Repeating...HIT! DECKS LEFT: " + ship.getDecks());
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            config.addHit(coordinates);
-                                        }
-                                    });
+                                    System.out.println("HIT! DECKS LEFT: " + ship.getDecks());
 
                                     if(ship.isDrowned()) {
                                         player.getReport(coordinates, RESULT_DROWN);
@@ -373,7 +369,7 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                                             Result result = getResult(false);
                                             db.resultDao().insert(result);
                                             BattleApplication.getInstance().getStartModel().updateResults();
-                                            runOnUiThread(new Runnable() {
+                                            BattleActivity.this.runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     Toast.makeText(BattleActivity.this, "YOU HAVE LOST!", Toast.LENGTH_LONG).show();
@@ -384,11 +380,15 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
 
                                             try {
                                                 Thread.sleep(500);
-                                                if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                                //if(!isAgainstAI) Connector.getInstance().stopCommunication();
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
-                                            finish();
+                                            finally {
+                                                config = null;
+                                                if(!isAgainstAI) Connector.getInstance().stopCommunication();
+                                                finish();
+                                            }
                                         }
                                     }
                                     else {
@@ -404,27 +404,20 @@ public class BattleActivity extends AppCompatActivity implements CompoundButton.
                             public void run() {
                                 config.addShot(coordinates);
                                 config.incrementTurn();
+                                turn.setText(YOURS + config.getTurnNumber());
+
                             }
                         });
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
 
                         config.setYourTurn(true);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                turn.setText(YOURS + config.getTurnNumber());
-                            }
-                        });
 
                     }
                 }
             }
         };
-        new Thread(defending).start();
+        defend = new Thread(defending);
+        defend.start();
+        System.out.println("INSDIE BATTLE THREAD STATED = " + defend.getName());
     }
 
 
